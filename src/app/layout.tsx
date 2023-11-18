@@ -1,3 +1,4 @@
+import { Nav } from "@/components/Nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Nav />
           {children}
         </ThemeProvider>
       </body>
