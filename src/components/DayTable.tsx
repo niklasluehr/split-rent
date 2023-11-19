@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import format from "date-fns/format";
 import { useState } from "react";
 
 const ROWS = 5;
@@ -47,13 +48,13 @@ export const DayTable = ({ names, startDate, endDate }: DayTableProps) => {
         {dates.map((date, i) => (
           <tr key={i}>
             <th className="pr-2 text-sm font-normal">
-              {date.toLocaleDateString()}
+              {format(date, "LLL dd")}
             </th>
             {names.map((_, j) => (
               <td
                 onClick={(e) => toggleCellSelection(i, j)}
                 className={cn(
-                  "h-8 w-8 cursor-cell border-2 text-center text-primary-foreground",
+                  "h-6 cursor-cell border-2 text-center text-sm text-primary-foreground",
                   {
                     "bg-primary": isSelected(i, j),
                   },
