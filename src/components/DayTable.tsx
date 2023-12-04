@@ -1,37 +1,149 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { eachDayOfInterval } from "date-fns";
 import format from "date-fns/format";
-import { useState } from "react";
+import { Check, PlusCircle, Trash2, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Separator } from "./ui/separator";
 
-const ROWS = 5;
-const COLS = 5;
+const sampleTenants = [
+  "Alice",
+  "Bob",
+  "Charlie",
+  "David",
+  "Eve",
+  "Frank",
+  "Grace",
+  "Heidi",
+  "Ivan",
+  "Judy",
+  "Mallory",
+  "Oscar",
+  "Peggy",
+  "Sybil",
+  "Trent",
+  "Victor",
+  "Walter",
+];
+
+const n = (date: Date) => Number(format(date, "yyyyMMdd"));
 
 interface DayTableProps {
   startDate: Date;
+  addTenant: () => void;
+  removeTenant: (index: number) => void;
+  changeTenantName: (index: number, name: string) => void;
   endDate: Date;
-  names: string[];
+  tenants: string[];
 }
 
-export const DayTable = ({ names, startDate, endDate }: DayTableProps) => {
-  const [selectedCells, setSelectedCells] = useState<string[]>([]);
-
-  const dates = Array.from(
-    { length: Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000) },
-    (_, i) => new Date(startDate.getTime() + i * 86400000),
+export const DayTable = ({
+  tenants,
+  addTenant,
+  removeTenant,
+  changeTenantName,
+  startDate,
+  endDate,
+}: DayTableProps) => {
+  const numPeople = tenants.length;
+  const [selectedDates, setSelectedDates] = useState<number[][]>(
+    Array(numPeople).fill([]),
   );
 
-  const toggleCellSelection = (i: number, j: number) => {
-    const cellId = `${i}-${j}`;
-    if (selectedCells.includes(cellId)) {
-      setSelectedCells((prev) => prev.filter((cell) => cell !== cellId));
+  const [selectionStart, setSelectionStart] = useState<(Date | null)[]>(
+    Array(numPeople).fill(null),
+  );
+
+  const dates = eachDayOfInterval({ start: startDate, end: endDate });
+
+  const lastInputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = (personIndex: number, date: Date) => {
+    if (selectionStart[personIndex] === null) {
+      setSelectionStart((prev) =>
+        prev.map((_, i) => (i === personIndex ? date : null)),
+      );
     } else {
-      setSelectedCells((prev) => [...prev, cellId]);
+      const a = selectionStart[personIndex]!;
+      const b = date;
+      const [start, end] = a < b ? [a, b] : [b, a];
+      const datesToToggle = eachDayOfInterval({ start, end });
+      setSelectedDates;
+      datesToToggle.forEach((date) => toggleCellSelection(personIndex, date));
+      setSelectionStart((prev) => prev.map(() => null));
+    }
+    console.log(selectionStart);
+  };
+
+  const handleAddClick = () => {
+    addTenant();
+    setSelectedDates((prev) => [...prev, []]);
+    setSelectionStart((prev) => [...prev, null]);
+    setTimeout(() => lastInputRef.current?.focus(), 100);
+  };
+
+  const handleDeleteClick = (personIndex: number) => () => {
+    removeTenant(personIndex);
+    setSelectedDates((prev) => prev.filter((_, i) => i !== personIndex));
+    setSelectionStart((prev) => prev.filter((_, i) => i !== personIndex));
+  };
+
+  const toggleCellSelection = (personIndex: number, date: Date) => {
+    const dateString = n(date);
+    if (!selectedDates[personIndex]!.includes(dateString)) {
+      setSelectedDates((prev) => {
+        const newSelectedDates = [...prev];
+        newSelectedDates[personIndex] = [
+          ...prev[personIndex]!,
+          dateString,
+        ].sort();
+        return newSelectedDates;
+      });
+    } else {
+      setSelectedDates((prev) => {
+        const newSelectedDates = [...prev];
+        newSelectedDates[personIndex] = prev[personIndex]!.filter(
+          (d) => d !== dateString,
+        );
+        return newSelectedDates;
+      });
     }
   };
 
-  const isSelected = (i: number, j: number) => {
-    const cellId = `${i}-${j}`;
-    return selectedCells.includes(cellId);
+  const selectAll = (personIndex: number) => {
+    setSelectedDates((prev) => {
+      const newSelectedDates = [...prev];
+      newSelectedDates[personIndex] = dates.map((date) => n(date));
+      return newSelectedDates;
+    });
+  };
+
+  const deselectAll = (personIndex: number) => {
+    setSelectedDates((prev) => {
+      const newSelectedDates = [...prev];
+      newSelectedDates[personIndex] = [];
+      return newSelectedDates;
+    });
+  };
+
+  const isSelected = (personIndex: number, date: Date) => {
+    const dateString = n(date);
+    return selectedDates[personIndex]?.includes(dateString);
+  };
+
+  const getText = (personIndex: number, date: Date) => {
+    if (!isSelected(personIndex, date)) {
+      return "";
+    }
+    const dateString = n(date);
+    const index = selectedDates[personIndex]?.indexOf(dateString);
+    if (index === 0 || index === selectedDates[personIndex]!.length - 1) {
+      return date.getDate() + ".";
+    } else if (index === selectedDates[personIndex]!.length - 2) {
+      return "↓";
+    } else {
+      return "|";
+    }
   };
 
   return (
@@ -39,117 +151,71 @@ export const DayTable = ({ names, startDate, endDate }: DayTableProps) => {
       <tbody>
         <tr>
           <td></td>
-          {names.map((name, i) => (
-            <th className="w-12 px-0.5 pb-1 text-sm font-normal" key={i}>
-              {name}
+          {tenants.map((name, personIndex) => (
+            <th
+              className={cn("w-14 px-0.5  font-normal", {
+                "text-primary": selectionStart[personIndex],
+              })}
+              key={personIndex}
+            >
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  disabled={personIndex < 2}
+                  className="text-destructive disabled:text-gray-400"
+                  tabIndex={-1}
+                  onClick={handleDeleteClick(personIndex)}
+                >
+                  <Trash2 size={20} />
+                </button>
+                <Separator className="mb-1 mt-2" />
+                <button tabIndex={-1} onClick={() => selectAll(personIndex)}>
+                  <Check size={26} className="text-green-900" />
+                </button>
+                <button tabIndex={-1} onClick={() => deselectAll(personIndex)}>
+                  <X size={26} className="text-destructive" />
+                </button>
+                <input
+                  ref={personIndex === tenants.length - 1 ? lastInputRef : null}
+                  className="w-full bg-background text-center"
+                  placeholder={sampleTenants[personIndex]}
+                  value={tenants[personIndex]}
+                  onChange={(e) =>
+                    changeTenantName(personIndex, e.target.value)
+                  }
+                  onFocus={(e) => e.target.select()}
+                />
+              </div>
             </th>
           ))}
+          <th className="pl-2">
+            <button onClick={handleAddClick}>
+              <PlusCircle size={20} className="text-primary" />
+            </button>
+          </th>
         </tr>
-        {dates.map((date, i) => (
-          <tr key={i}>
+        {dates.map((date) => (
+          <tr key={n(date)}>
             <th className="pr-2 text-sm font-normal">
               {format(date, "LLL dd")}
             </th>
-            {names.map((_, j) => (
+            {tenants.map((_, personIndex) => (
               <td
-                onClick={(e) => toggleCellSelection(i, j)}
+                onClick={(e) => handleClick(personIndex, date)}
                 className={cn(
-                  "h-6 cursor-cell border-2 text-center text-sm text-primary-foreground",
+                  "cursor-pointer border-2 text-center text-sm text-primary-foreground",
                   {
-                    "bg-primary": isSelected(i, j),
+                    "bg-primary": isSelected(personIndex, date),
+                    "bg-red-200": selectionStart[personIndex] === date,
                   },
                 )}
-                key={`${i}-${j}`}
+                key={`${n(date)}-${personIndex}`}
               >
-                {isSelected(i, j) ? `${date.getDate()}.` : ""}
+                {/* {getText(personIndex, date)} */}
               </td>
             ))}
           </tr>
         ))}
       </tbody>
     </table>
-  );
-};
-
-interface TableProps {
-  onCellClick: (cellId: string) => void;
-  onCellDrag: (cellId: string) => void;
-  selectedCells: string[];
-}
-
-const Table = ({ onCellClick, onCellDrag, selectedCells }: TableProps) => {
-  const renderTable = () => {
-    const table = [];
-    for (let i = 0; i < ROWS; i++) {
-      const row = [];
-      for (let j = 0; j < COLS; j++) {
-        const cellId = `${i}-${j}`;
-        const isSelected = selectedCells.includes(cellId);
-        row.push(
-          <td
-            key={cellId}
-            id={cellId}
-            className={isSelected ? "bg-primary" : ""}
-            onMouseDown={() => onCellClick(cellId)}
-            onMouseOver={() => onCellDrag(cellId)}
-          >
-            {cellId}
-          </td>,
-        );
-      }
-      table.push(<tr key={i}>{row}</tr>);
-    }
-    return table;
-  };
-
-  return (
-    <table>
-      <tbody>{renderTable()}</tbody>
-    </table>
-  );
-};
-
-const DayTable2 = () => {
-  const [selectedCells, setSelectedCells] = useState<string[]>([]);
-
-  const handleCellClick = (cellId: string) => {
-    setSelectedCells([cellId]);
-  };
-
-  const handleCellDrag = (cellId: string) => {
-    if (selectedCells.length > 0) {
-      const startCell = selectedCells[0]!.split("-").map(Number);
-      const currentCell = cellId.split("-").map(Number);
-
-      const rows = Array.from(
-        { length: Math.abs(currentCell[0]! - startCell[0]!) + 1 },
-        (_, i) => Math.min(startCell[0]!, currentCell[0]!) + i,
-      );
-
-      const cols = Array.from(
-        { length: Math.abs(currentCell[1]! - startCell[1]!) + 1 },
-        (_, i) => Math.min(startCell[1]!, currentCell[1]!) + i,
-      );
-
-      const newSelectedCells: string[] = [];
-      rows.forEach((row) => {
-        cols.forEach((col) => {
-          newSelectedCells.push(`${row}-${col}`);
-        });
-      });
-
-      setSelectedCells(newSelectedCells);
-    }
-  };
-
-  return (
-    <div className="App">
-      <h1>Table Selection Example</h1>
-      <Table
-        onCellClick={handleCellClick}
-        onCellDrag={handleCellDrag}
-        selectedCells={selectedCells}
-      />
-    </div>
   );
 };
