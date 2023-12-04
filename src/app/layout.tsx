@@ -22,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body
+        className={`font-sans ${inter.variable} flex flex-col items-center`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
