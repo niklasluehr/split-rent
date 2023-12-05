@@ -8,7 +8,7 @@ import { DateRange } from "react-day-picker";
 
 export default function HomePage() {
   const [tenants, setTenants] = useState<string[]>(["", "", ""]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(1500);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   const addTenant = () => {
@@ -41,6 +41,7 @@ export default function HomePage() {
           changeTenantName={changeTenantName}
           startDate={dateRange?.from || new Date()}
           endDate={dateRange?.to || new Date()}
+          totalPrice={totalPrice}
         />
       )}
     </main>

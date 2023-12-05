@@ -1,12 +1,13 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, n } from "@/lib/utils";
 import { eachDayOfInterval } from "date-fns";
 import format from "date-fns/format";
 import { Check, PlusCircle, Trash2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Separator } from "./ui/separator";
+import { Summary } from "./Summary";
 
-const sampleTenants = [
+export const sampleTenants = [
   "Alice",
   "Bob",
   "Charlie",
@@ -26,8 +27,6 @@ const sampleTenants = [
   "Walter",
 ];
 
-const n = (date: Date) => Number(format(date, "yyyyMMdd"));
-
 interface DayTableProps {
   startDate: Date;
   addTenant: () => void;
@@ -35,6 +34,7 @@ interface DayTableProps {
   changeTenantName: (index: number, name: string) => void;
   endDate: Date;
   tenants: string[];
+  totalPrice: number;
 }
 
 export const DayTable = ({
@@ -44,6 +44,7 @@ export const DayTable = ({
   changeTenantName,
   startDate,
   endDate,
+  totalPrice,
 }: DayTableProps) => {
   const numPeople = tenants.length;
   const [selectedDates, setSelectedDates] = useState<number[][]>(
@@ -72,7 +73,6 @@ export const DayTable = ({
       datesToToggle.forEach((date) => toggleCellSelection(personIndex, date));
       setSelectionStart((prev) => prev.map(() => null));
     }
-    console.log(selectionStart);
   };
 
   const handleAddClick = () => {
@@ -131,91 +131,98 @@ export const DayTable = ({
     return selectedDates[personIndex]?.includes(dateString);
   };
 
+  const isSelectionStart = (personIndex: number, date: Date) => {
+    return selectionStart[personIndex]?.getTime() === date.getTime();
+  };
+
   const getText = (personIndex: number, date: Date) => {
-    if (!isSelected(personIndex, date)) {
-      return "";
-    }
-    const dateString = n(date);
-    const index = selectedDates[personIndex]?.indexOf(dateString);
-    if (index === 0 || index === selectedDates[personIndex]!.length - 1) {
-      return date.getDate() + ".";
-    } else if (index === selectedDates[personIndex]!.length - 2) {
-      return "↓";
-    } else {
-      return "|";
-    }
+    return "";
   };
 
   return (
-    <table>
-      <tbody>
-        <tr>
-          <td></td>
-          {tenants.map((name, personIndex) => (
-            <th
-              className={cn("w-14 px-0.5  font-normal", {
-                "text-primary": selectionStart[personIndex],
-              })}
-              key={personIndex}
-            >
-              <div className="flex flex-col items-center justify-center">
-                <button
-                  disabled={personIndex < 2}
-                  className="text-destructive disabled:text-gray-400"
-                  tabIndex={-1}
-                  onClick={handleDeleteClick(personIndex)}
-                >
-                  <Trash2 size={20} />
-                </button>
-                <Separator className="mb-1 mt-2" />
-                <button tabIndex={-1} onClick={() => selectAll(personIndex)}>
-                  <Check size={26} className="text-green-900" />
-                </button>
-                <button tabIndex={-1} onClick={() => deselectAll(personIndex)}>
-                  <X size={26} className="text-destructive" />
-                </button>
-                <input
-                  ref={personIndex === tenants.length - 1 ? lastInputRef : null}
-                  className="w-full bg-background text-center"
-                  placeholder={sampleTenants[personIndex]}
-                  value={tenants[personIndex]}
-                  onChange={(e) =>
-                    changeTenantName(personIndex, e.target.value)
-                  }
-                  onFocus={(e) => e.target.select()}
-                />
-              </div>
-            </th>
-          ))}
-          <th className="pl-2">
-            <button onClick={handleAddClick}>
-              <PlusCircle size={20} className="text-primary" />
-            </button>
-          </th>
-        </tr>
-        {dates.map((date) => (
-          <tr key={n(date)}>
-            <th className="pr-2 text-sm font-normal">
-              {format(date, "LLL dd")}
-            </th>
-            {tenants.map((_, personIndex) => (
-              <td
-                onClick={(e) => handleClick(personIndex, date)}
-                className={cn(
-                  "cursor-pointer border-2 text-center text-sm text-primary-foreground",
-                  {
-                    "bg-primary": isSelected(personIndex, date),
-                    "bg-red-200": selectionStart[personIndex] === date,
-                  },
-                )}
-                key={`${n(date)}-${personIndex}`}
-              >
-                {/* {getText(personIndex, date)} */}
-              </td>
+    <>
+      <table className="border-separate">
+        <tbody>
+          <tr>
+            <td></td>
+            {tenants.map((name, personIndex) => (
+              <th className="w-14 px-0.5  font-normal" key={personIndex}>
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    disabled={personIndex < 2}
+                    className="text-destructive disabled:text-gray-400"
+                    tabIndex={-1}
+                    onClick={handleDeleteClick(personIndex)}
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                  <Separator className="mb-1 mt-2" />
+                  <button tabIndex={-1} onClick={() => selectAll(personIndex)}>
+                    <Check size={26} className="text-green-900" />
+                  </button>
+                  <button
+                    tabIndex={-1}
+                    onClick={() => deselectAll(personIndex)}
+                  >
+                    <X size={26} className="text-destructive" />
+                  </button>
+                  <input
+                    ref={
+                      personIndex === tenants.length - 1 ? lastInputRef : null
+                    }
+                    className="w-full bg-background text-center"
+                    placeholder={sampleTenants[personIndex]}
+                    value={tenants[personIndex]}
+                    onChange={(e) =>
+                      changeTenantName(personIndex, e.target.value)
+                    }
+                    onFocus={(e) => e.target.select()}
+                  />
+                </div>
+              </th>
             ))}
+            <th className="pl-2">
+              <button onClick={handleAddClick}>
+                <PlusCircle size={20} className="text-primary" />
+              </button>
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+          {dates.map((date) => (
+            <tr key={n(date)}>
+              <th className="pr-2 text-sm font-normal">
+                {format(date, "LLL dd")}
+              </th>
+              {tenants.map((_, personIndex) => (
+                <td
+                  onClick={(e) => handleClick(personIndex, date)}
+                  className={cn(
+                    "cursor-pointer border-2 text-center text-sm text-primary-foreground",
+                    {
+                      "bg-primary": isSelected(personIndex, date),
+                      "border-2 border-foreground": isSelectionStart(
+                        personIndex,
+                        date,
+                      ),
+                    },
+                  )}
+                  key={`${n(date)}-${personIndex}`}
+                >
+                  {getText(personIndex, date)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="h-6" />
+
+      <Summary
+        tenants={tenants}
+        selectedDates={selectedDates}
+        totalPrice={totalPrice}
+        dates={dates}
+      />
+    </>
   );
 };
