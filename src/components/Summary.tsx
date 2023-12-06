@@ -22,17 +22,31 @@ export const Summary = ({
         .fill(false)
         .map((_, personIndex) => selectedDates[personIndex]!.includes(n(date))),
     );
-    console.log(binaryMatrix);
+    const countVector = binaryMatrix.map((row) =>
+      row.reduce((acc, curr) => acc + +curr, 0),
+    );
+
     const prices = Array(selectedDates.length).fill(0);
-    dates.forEach((date) => {});
+    binaryMatrix.forEach((row, dateIndex) => {
+      if (!row.includes(true)) {
+        prices.forEach((_, personIndex) => {
+          prices[personIndex] += dayPrice / tenants.length;
+        });
+      } else {
+        row.forEach((isSelected, personIndex) => {
+          if (isSelected) {
+            prices[personIndex] += dayPrice / countVector[dateIndex]!;
+          }
+        });
+      }
+    });
 
     return prices;
   };
 
   return (
     <>
-      <span>Daily Price: {dayPrice}</span>
-      <span>Prices: {getPrices()}</span>
+      {/* <span>Daily Price: {dayPrice.toFixed(2)} €</span> */}
       <table>
         <tbody>
           {tenants.map((name, personIndex) => (
@@ -40,7 +54,9 @@ export const Summary = ({
               <td className="">
                 {name.length > 0 ? name : sampleTenants[personIndex]}
               </td>
-              <td className="w-24 text-right">{} €</td>
+              <td className="w-28 text-right">
+                {getPrices()[personIndex].toFixed(2)} €
+              </td>
             </tr>
           ))}
         </tbody>
