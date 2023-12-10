@@ -50,7 +50,9 @@ export const Summary = ({
   const getPricesSplitNumNights = () => {
     const numDays = selectedDates.reduce((acc, curr) => acc + curr.length, 0);
     if (numDays === 0) {
-      return Array(tenants.length).fill(totalPrice / tenants.length);
+      return Array(tenants.length).fill(
+        totalPrice / tenants.length,
+      ) as number[];
     }
     const dayPrice = totalPrice / numDays;
     const prices = selectedDates.map((dates) => dates.length * dayPrice);
