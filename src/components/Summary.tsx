@@ -16,7 +16,7 @@ export const Summary = ({
 }: SummaryProps) => {
   const dayPrice = totalPrice / dates.length;
 
-  const getPrices = () => {
+  const getPricesSplitPerNight = () => {
     const binaryMatrix = dates.map((date) =>
       Array(tenants.length)
         .fill(false)
@@ -44,6 +44,17 @@ export const Summary = ({
     return prices;
   };
 
+  const getPricesSplitNumNights = () => {
+    const numDays = selectedDates.reduce((acc, curr) => acc + curr.length, 0);
+    if (numDays === 0) {
+      return Array(tenants.length).fill(totalPrice / tenants.length);
+    }
+    const dayPrice = totalPrice / numDays;
+    const prices = selectedDates.map((dates) => dates.length * dayPrice);
+    console.log(prices);
+    return prices;
+  };
+
   return (
     <>
       {/* <span>Daily Price: {dayPrice.toFixed(2)} €</span> */}
@@ -55,7 +66,7 @@ export const Summary = ({
                 {name.length > 0 ? name : sampleTenants[personIndex]}
               </td>
               <td className="w-28 text-right">
-                {getPrices()[personIndex]!.toFixed(2)} €
+                {getPricesSplitNumNights()[personIndex]!.toFixed(2)} €
               </td>
             </tr>
           ))}
