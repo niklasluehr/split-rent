@@ -56,7 +56,6 @@ export const Summary = ({
     }
     const dayPrice = totalPrice / numDays;
     const prices = selectedDates.map((dates) => dates.length * dayPrice);
-    console.log(prices);
     return prices;
   };
 
