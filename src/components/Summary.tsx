@@ -1,11 +1,13 @@
 import { n } from "@/lib/utils";
 import { sampleTenants } from "./DayTable";
+import { type CalculationType } from "./CalculationTypeRadioGroup";
 
 interface SummaryProps {
   tenants: string[];
   selectedDates: number[][];
   totalPrice: number;
   dates: Date[];
+  calcType: CalculationType;
 }
 
 export const Summary = ({
@@ -13,6 +15,7 @@ export const Summary = ({
   selectedDates,
   totalPrice,
   dates,
+  calcType,
 }: SummaryProps) => {
   const dayPrice = totalPrice / dates.length;
 
@@ -55,18 +58,29 @@ export const Summary = ({
     return prices;
   };
 
+  const getPrices = () => {
+    if (calcType === "perNight") {
+      return getPricesSplitPerNight();
+    } else {
+      return getPricesSplitNumNights();
+    }
+  };
+
   return (
     <>
       {/* <span>Daily Price: {dayPrice.toFixed(2)} €</span> */}
       <table>
-        <tbody>
+        <tbody className="">
           {tenants.map((name, personIndex) => (
-            <tr key={personIndex}>
+            <tr
+              key={personIndex}
+              className="border-b-2 last:border-b-0 even:bg-muted"
+            >
               <td className="">
                 {name.length > 0 ? name : sampleTenants[personIndex]}
               </td>
-              <td className="w-28 text-right">
-                {getPricesSplitNumNights()[personIndex]!.toFixed(2)} €
+              <td className="w-32 text-right">
+                {getPrices()[personIndex]!.toFixed(2)} €
               </td>
             </tr>
           ))}

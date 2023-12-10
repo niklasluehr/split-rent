@@ -6,6 +6,10 @@ import { Check, PlusCircle, Trash2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Separator } from "./ui/separator";
 import { Summary } from "./Summary";
+import {
+  type CalculationType,
+  CalculationTypeRadioGroup,
+} from "./CalculationTypeRadioGroup";
 
 export const sampleTenants = [
   "Alice",
@@ -55,6 +59,7 @@ export const DayTable = ({
     Array(numPeople).fill(null),
   );
 
+  const [calcType, setCalcType] = useState<CalculationType>("perNight");
   const dates = eachDayOfInterval({ start: startDate, end: endDate });
 
   const lastInputRef = useRef<HTMLInputElement>(null);
@@ -217,11 +222,19 @@ export const DayTable = ({
 
       <div className="h-6" />
 
+      <CalculationTypeRadioGroup
+        calcType={calcType}
+        setCalcType={setCalcType}
+      />
+
+      <div className="h-4" />
+
       <Summary
         tenants={tenants}
         selectedDates={selectedDates}
         totalPrice={totalPrice}
         dates={dates}
+        calcType={calcType}
       />
     </>
   );
