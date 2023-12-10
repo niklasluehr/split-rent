@@ -7,7 +7,7 @@ interface PriceInputProps {
 }
 
 export const PriceInput = ({ updatePrice }: PriceInputProps) => {
-  const [price, setPrice] = useState<string>("1.500");
+  const [price, setPrice] = useState<string>("1500");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
