@@ -4,7 +4,7 @@ import { DateRangePicker } from "@/components/DateRangePicker";
 import { DayTable } from "@/components/DayTable";
 import { PriceInput } from "@/components/PriceInput";
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import { type DateRange } from "react-day-picker";
 
 export default function HomePage() {
   const [tenants, setTenants] = useState<string[]>(["", "", ""]);
@@ -39,8 +39,8 @@ export default function HomePage() {
           addTenant={addTenant}
           removeTenant={removeTenant}
           changeTenantName={changeTenantName}
-          startDate={dateRange?.from || new Date()}
-          endDate={dateRange?.to || new Date()}
+          startDate={dateRange?.from ?? new Date()}
+          endDate={dateRange?.to ?? new Date()}
           totalPrice={totalPrice}
         />
       )}

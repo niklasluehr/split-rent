@@ -26,7 +26,7 @@ export const Summary = ({
       row.reduce((acc, curr) => acc + +curr, 0),
     );
 
-    const prices = Array(selectedDates.length).fill(0);
+    const prices = Array(selectedDates.length).fill(0) as number[];
     binaryMatrix.forEach((row, dateIndex) => {
       if (!row.includes(true)) {
         prices.forEach((_, personIndex) => {
@@ -55,7 +55,7 @@ export const Summary = ({
                 {name.length > 0 ? name : sampleTenants[personIndex]}
               </td>
               <td className="w-28 text-right">
-                {getPrices()[personIndex].toFixed(2)} €
+                {getPrices()[personIndex]!.toFixed(2)} €
               </td>
             </tr>
           ))}

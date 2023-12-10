@@ -194,7 +194,7 @@ export const DayTable = ({
               </th>
               {tenants.map((_, personIndex) => (
                 <td
-                  onClick={(e) => handleClick(personIndex, date)}
+                  onClick={() => handleClick(personIndex, date)}
                   className={cn(
                     "cursor-pointer border-2 text-center text-sm text-primary-foreground",
                     {
