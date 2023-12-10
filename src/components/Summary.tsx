@@ -48,14 +48,28 @@ export const Summary = ({
   };
 
   const getPricesSplitNumNights = () => {
-    const numDays = selectedDates.reduce((acc, curr) => acc + curr.length, 0);
+    let numDays = 0;
+    dates.forEach((date) => {
+      selectedDates.forEach((personDates) => {
+        numDays += +personDates.includes(n(date));
+      });
+    });
     if (numDays === 0) {
       return Array(tenants.length).fill(
         totalPrice / tenants.length,
       ) as number[];
     }
+
     const dayPrice = totalPrice / numDays;
-    const prices = selectedDates.map((dates) => dates.length * dayPrice);
+    const prices = Array(selectedDates.length).fill(0) as number[];
+    dates.forEach((date) => {
+      selectedDates.forEach((personDates, personIndex) => {
+        if (personDates.includes(n(date))) {
+          prices[personIndex] += dayPrice;
+        }
+      });
+    });
+
     return prices;
   };
 
