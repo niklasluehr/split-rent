@@ -11,7 +11,7 @@ const inter = Inter({
 
 export const metadata = {
   title: "Split Rent",
-  description: "Easily split rent",
+  description: "Split your rental expenses easily.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
