@@ -7,7 +7,7 @@ import { useState } from "react";
 import { type DateRange } from "react-day-picker";
 
 export default function HomePage() {
-  const [tenants, setTenants] = useState<string[]>(["", "", ""]);
+  const [tenants, setTenants] = useState<string[]>(["", ""]);
   const [totalPrice, setTotalPrice] = useState<number>(1500);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
