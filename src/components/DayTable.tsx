@@ -1,6 +1,6 @@
 "use client";
 import { cn, n } from "@/lib/utils";
-import { eachDayOfInterval } from "date-fns";
+import { addDays, eachDayOfInterval } from "date-fns";
 import format from "date-fns/format";
 import { Check, PlusCircle, Trash2, X } from "lucide-react";
 import { useRef, useState } from "react";
@@ -140,18 +140,44 @@ export const DayTable = ({
     return selectionStart[personIndex]?.getTime() === date.getTime();
   };
 
+  const isRangeStart = (personIndex: number, date: Date) => {
+    const dateString = n(date);
+    const nextDay = addDays(date, 1);
+    return (
+      selectedDates[personIndex]!.includes(dateString) &&
+      !selectedDates[personIndex]!.includes(n(nextDay))
+    );
+  };
+
+  const isRangeEnd = (personIndex: number, date: Date) => {
+    const dateString = n(date);
+    const prevDay = addDays(date, -1);
+    return (
+      selectedDates[personIndex]!.includes(dateString) &&
+      !selectedDates[personIndex]!.includes(n(prevDay))
+    );
+  };
+
   const getText = (personIndex: number, date: Date) => {
-    return "";
+    if (
+      isRangeEnd(personIndex, date) ||
+      isRangeStart(personIndex, date) ||
+      isSelectionStart(personIndex, date)
+    ) {
+      return date.getDate() + ".";
+    } else {
+      return "";
+    }
   };
 
   return (
     <>
-      <table className="border-separate">
+      <table className="border-separate overflow-y-scroll pr-4">
         <tbody>
           <tr>
             <td></td>
-            {tenants.map((name, personIndex) => (
-              <th className="w-14 px-0.5  font-normal" key={personIndex}>
+            {tenants.map((_, personIndex) => (
+              <th className="w-14 px-0.5 font-normal" key={personIndex}>
                 <div className="flex flex-col items-center justify-center">
                   <button
                     disabled={personIndex < 2}
@@ -193,18 +219,18 @@ export const DayTable = ({
             </th>
           </tr>
           {dates.map((date) => (
-            <tr key={n(date)}>
-              <th className="pr-2 text-sm font-normal">
+            <tr key={n(date)} className="even:bg-muted">
+              <th className="min-w-[3.5rem] pr-2 text-sm font-normal">
                 {format(date, "LLL dd")}
               </th>
               {tenants.map((_, personIndex) => (
                 <td
                   onClick={() => handleClick(personIndex, date)}
                   className={cn(
-                    "cursor-pointer border-2 text-center text-sm text-primary-foreground",
+                    "min-w-[2.5rem] cursor-pointer border-2 text-center text-sm leading-none text-muted-foreground",
                     {
                       "bg-primary": isSelected(personIndex, date),
-                      "border-2 border-foreground": isSelectionStart(
+                      "border-dashed border-foreground ": isSelectionStart(
                         personIndex,
                         date,
                       ),
@@ -222,20 +248,24 @@ export const DayTable = ({
 
       <div className="h-6" />
 
-      <CalculationTypeRadioGroup
-        calcType={calcType}
-        setCalcType={setCalcType}
-      />
+      {selectedDates.some((dates) => dates.length > 0) && (
+        <>
+          <CalculationTypeRadioGroup
+            calcType={calcType}
+            setCalcType={setCalcType}
+          />
 
-      <div className="h-4" />
+          <div className="h-4" />
 
-      <Summary
-        tenants={tenants}
-        selectedDates={selectedDates}
-        totalPrice={totalPrice}
-        dates={dates}
-        calcType={calcType}
-      />
+          <Summary
+            tenants={tenants}
+            selectedDates={selectedDates}
+            totalPrice={totalPrice}
+            dates={dates}
+            calcType={calcType}
+          />
+        </>
+      )}
     </>
   );
 };
