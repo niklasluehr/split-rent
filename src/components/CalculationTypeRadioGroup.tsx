@@ -82,6 +82,10 @@ function InfoSheet() {
               the <i>price-per-person-night</i> multiplied by the number of
               nights they stay.
             </p>
+            <p>
+              With this method, everyone pays an amount proportional to the time
+              the stay.
+            </p>
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
