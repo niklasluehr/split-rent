@@ -83,7 +83,6 @@ export const Summary = ({
 
   return (
     <>
-      {/* <span>Daily Price: {dayPrice.toFixed(2)} €</span> */}
       <table>
         <tbody className="">
           {tenants.map((name, personIndex) => (
