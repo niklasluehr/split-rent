@@ -32,7 +32,7 @@ export const DateRangePicker = ({ updateDate }: DateRangePickerProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-1 flex-col gap-2">
       <Label>Rental Period</Label>
       <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
         <PopoverTrigger asChild>
