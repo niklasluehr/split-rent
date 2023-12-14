@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
 import { Inter } from "next/font/google";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
           <Nav />
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
