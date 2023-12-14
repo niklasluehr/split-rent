@@ -16,7 +16,7 @@ interface CalculationTypeRadioGroupProps {
 }
 
 export type CalculationType = "perNight" | "numNights";
-const labels = ["Fixed price per night", "Fixed price per person-night"];
+const labels = ["Fixed price per day", "Fixed price per person-day"];
 
 export const CalculationTypeRadioGroup = ({
   calcType,
@@ -60,31 +60,31 @@ function InfoSheet() {
               that fits your situation best and is the most fair. Play with the
               app to see how the settings affect the price splitting.
             </p>
-            <h1 className="mt-4 font-bold">Fixed price per night</h1>
+            <h1 className="mt-4 font-bold">Fixed price per day</h1>
             <p>
-              Take the total price and divide it by the number of nights. This
-              is the fixed <i>price-per-night</i>. Then, for each night, split
-              the <i>price-per-night</i> equally between all present persons on
-              that night.
+              Take the total price and divide it by the number of days. This is
+              the fixed <i>price-per-day</i>. Then, for each day, split the{" "}
+              <i>price-per-day</i> equally between all present persons on that
+              day.
             </p>
             <p>
-              Nights where no one is present are split equally by all persons.
+              Days where no one is present are split equally by all persons.
             </p>
             <p>
-              With this method, people pay more for nights when there are fewer
+              With this method, people pay more for days when there are fewer
               persons present.
             </p>
-            <h1 className="mt-4 font-bold">Fixed price per person-night</h1>
+            <h1 className="mt-4 font-bold">Fixed price per person-day</h1>
             <p>
-              For each person, every night they stay counts as one person-night.
-              Divide the total price by the total number of person-nights. This
-              is the fixed <i>price-per-person-night</i>. Then, each person pays
-              the <i>price-per-person-night</i> multiplied by the number of
-              nights they stay.
+              For each person, every day they stay counts as one person-day.
+              Divide the total price by the total number of person-days. This is
+              the fixed <i>price-per-person-day</i>. Then, each person pays the{" "}
+              <i>price-per-person-day</i> multiplied by the number of days they
+              stay.
             </p>
             <p>
               With this method, everyone pays an amount proportional to the time
-              the stay.
+              they stay.
             </p>
           </SheetDescription>
         </SheetHeader>
