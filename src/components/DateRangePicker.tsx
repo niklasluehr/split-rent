@@ -63,6 +63,7 @@ export const DateRangePicker = ({ updateDate }: DateRangePickerProps) => {
           <Calendar
             initialFocus
             mode="range"
+            min={2}
             defaultMonth={date?.from}
             selected={date}
             onSelect={handleSelect}
