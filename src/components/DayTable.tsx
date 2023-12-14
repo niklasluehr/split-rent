@@ -173,7 +173,7 @@ export const DayTable = ({
 
   return (
     <>
-      <ScrollArea className="whitespace-nowrap pb-2 sm:w-min">
+      <ScrollArea className="whitespace-nowrap pb-2 sm:w-fit">
         <table className="border-separate pr-1">
           <tbody>
             <tr>

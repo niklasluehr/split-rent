@@ -26,7 +26,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="w-full px-4 pb-16 pt-4">
+    <main className="mx-auto w-full max-w-xl px-4 pb-16 pt-4">
       <div className="flex flex-col gap-3 sm:flex-row">
         <DateRangePicker updateDate={setDateRange} />
         <PriceInput updatePrice={setTotalPrice} />
