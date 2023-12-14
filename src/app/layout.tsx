@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`font-sans ${inter.variable} flex flex-col items-center`}
+        className={`font-sans ${inter.variable} mx-auto flex max-w-md flex-col`}
       >
         <ThemeProvider
           attribute="class"

@@ -24,16 +24,14 @@ export const PriceInput = ({ updatePrice }: PriceInputProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <Label>Total Price</Label>
+      <Label>Total Price €</Label>
       <div className="flex items-center gap-2">
         <Input
-          className="w-24"
           type="text"
           inputMode="numeric"
           value={price}
           onChange={handleChange}
         />
-        <span>€</span>
       </div>
     </div>
   );
