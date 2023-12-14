@@ -10,6 +10,7 @@ import {
   type CalculationType,
   CalculationTypeRadioGroup,
 } from "./CalculationTypeRadioGroup";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export const sampleTenants = [
   "Alice",
@@ -172,79 +173,85 @@ export const DayTable = ({
 
   return (
     <>
-      <table className="border-separate overflow-y-scroll pr-4">
-        <tbody>
-          <tr>
-            <td></td>
-            {tenants.map((_, personIndex) => (
-              <th className="w-14 px-0.5 font-normal" key={personIndex}>
-                <div className="flex flex-col items-center justify-center">
-                  <button
-                    disabled={personIndex < 2}
-                    className="text-destructive disabled:text-gray-400"
-                    tabIndex={-1}
-                    onClick={handleDeleteClick(personIndex)}
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                  <Separator className="mb-1 mt-2" />
-                  <button tabIndex={-1} onClick={() => selectAll(personIndex)}>
-                    <Check size={26} className="text-green-900" />
-                  </button>
-                  <button
-                    tabIndex={-1}
-                    onClick={() => deselectAll(personIndex)}
-                  >
-                    <X size={26} className="text-destructive" />
-                  </button>
-                  <input
-                    ref={
-                      personIndex === tenants.length - 1 ? lastInputRef : null
-                    }
-                    className="w-full bg-background text-center"
-                    placeholder={sampleTenants[personIndex]}
-                    value={tenants[personIndex]}
-                    onChange={(e) =>
-                      changeTenantName(personIndex, e.target.value)
-                    }
-                    onFocus={(e) => e.target.select()}
-                  />
-                </div>
-              </th>
-            ))}
-            <th className="pl-2">
-              <button onClick={handleAddClick}>
-                <PlusCircle size={20} className="text-primary" />
-              </button>
-            </th>
-          </tr>
-          {dates.map((date) => (
-            <tr key={n(date)} className="even:bg-muted">
-              <th className="min-w-[3.5rem] pr-2 text-sm font-normal">
-                {format(date, "LLL dd")}
-              </th>
+      <ScrollArea className="whitespace-nowrap pb-2">
+        <table className="border-separate pr-1">
+          <tbody>
+            <tr>
+              <td></td>
               {tenants.map((_, personIndex) => (
-                <td
-                  onClick={() => handleClick(personIndex, date)}
-                  className={cn(
-                    "min-w-[2.5rem] cursor-pointer border-2 text-center text-sm leading-none text-muted-foreground",
-                    {
-                      "bg-primary": isSelected(personIndex, date),
-                      "border-dashed border-foreground ": isSelectionStart(
-                        personIndex,
-                        date,
-                      ),
-                    },
-                  )}
-                  key={`${n(date)}-${personIndex}`}
-                >
-                  {getText(personIndex, date)}
-                </td>
+                <th className="w-14 px-0.5 font-normal" key={personIndex}>
+                  <div className="flex flex-col items-center justify-center">
+                    <button
+                      disabled={personIndex < 2}
+                      className="text-destructive disabled:text-gray-400"
+                      tabIndex={-1}
+                      onClick={handleDeleteClick(personIndex)}
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                    <Separator className="mb-1 mt-2" />
+                    <button
+                      tabIndex={-1}
+                      onClick={() => selectAll(personIndex)}
+                    >
+                      <Check size={26} className="text-green-900" />
+                    </button>
+                    <button
+                      tabIndex={-1}
+                      onClick={() => deselectAll(personIndex)}
+                    >
+                      <X size={26} className="text-destructive" />
+                    </button>
+                    <input
+                      ref={
+                        personIndex === tenants.length - 1 ? lastInputRef : null
+                      }
+                      className="w-full bg-background text-center"
+                      placeholder={sampleTenants[personIndex]}
+                      value={tenants[personIndex]}
+                      onChange={(e) =>
+                        changeTenantName(personIndex, e.target.value)
+                      }
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </div>
+                </th>
               ))}
+              <th className="pl-2">
+                <button onClick={handleAddClick}>
+                  <PlusCircle size={20} className="text-primary" />
+                </button>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+            {dates.map((date) => (
+              <tr key={n(date)} className="even:bg-muted">
+                <th className="min-w-[3.5rem] pr-2 text-sm font-normal">
+                  {format(date, "LLL dd")}
+                </th>
+                {tenants.map((_, personIndex) => (
+                  <td
+                    onClick={() => handleClick(personIndex, date)}
+                    className={cn(
+                      "min-w-[2.5rem] cursor-pointer border-2 text-center text-sm leading-none text-muted-foreground",
+                      {
+                        "bg-primary": isSelected(personIndex, date),
+                        "border-dashed border-foreground ": isSelectionStart(
+                          personIndex,
+                          date,
+                        ),
+                      },
+                    )}
+                    key={`${n(date)}-${personIndex}`}
+                  >
+                    {getText(personIndex, date)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
 
       <div className="h-6" />
 
