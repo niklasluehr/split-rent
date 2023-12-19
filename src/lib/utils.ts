@@ -7,3 +7,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const n = (date: Date) => Number(format(date, "yyyyMMdd"));
+
+export const fromNString = (s: string) => {
+  return new Date(
+    Number(s.slice(0, 4)),
+    Number(s.slice(4, 6)) - 1,
+    Number(s.slice(6, 8)),
+  );
+};
