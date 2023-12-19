@@ -1,22 +1,13 @@
 import { n } from "@/lib/utils";
 import { sampleTenants } from "./DayTable";
-import { type CalculationType } from "./CalculationTypeRadioGroup";
+import { useDataStore } from "@/store/store";
 
-interface SummaryProps {
-  tenants: string[];
-  selectedDates: number[][];
-  totalPrice: number;
-  dates: Date[];
-  calcType: CalculationType;
-}
-
-export const Summary = ({
-  tenants,
-  selectedDates,
-  totalPrice,
-  dates,
-  calcType,
-}: SummaryProps) => {
+export const Summary = () => {
+  const totalPrice = useDataStore((state) => state.totalPrice);
+  const tenants = useDataStore((state) => state.tenants);
+  const selectedDates = useDataStore((state) => state.selectedDates);
+  const calcType = useDataStore((state) => state.calcType);
+  const dates = useDataStore((state) => state.getDates());
   const dayPrice = totalPrice / dates.length;
 
   const getPricesSplitPerNight = () => {

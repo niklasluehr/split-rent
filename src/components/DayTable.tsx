@@ -6,11 +6,9 @@ import { Check, PlusCircle, Trash2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Separator } from "./ui/separator";
 import { Summary } from "./Summary";
-import {
-  type CalculationType,
-  CalculationTypeRadioGroup,
-} from "./CalculationTypeRadioGroup";
+import { CalculationTypeRadioGroup } from "./CalculationTypeRadioGroup";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { useDataStore } from "@/store/store";
 
 export const sampleTenants = [
   "Alice",
@@ -32,36 +30,24 @@ export const sampleTenants = [
   "Walter",
 ];
 
-interface DayTableProps {
-  startDate: Date;
-  addTenant: () => void;
-  removeTenant: (index: number) => void;
-  changeTenantName: (index: number, name: string) => void;
-  endDate: Date;
-  tenants: string[];
-  totalPrice: number;
-}
-
-export const DayTable = ({
-  tenants,
-  addTenant,
-  removeTenant,
-  changeTenantName,
-  startDate,
-  endDate,
-  totalPrice,
-}: DayTableProps) => {
-  const numPeople = tenants.length;
-  const [selectedDates, setSelectedDates] = useState<number[][]>(
-    Array(numPeople).fill([]),
+export const DayTable = () => {
+  const tenants = useDataStore((state) => state.tenants);
+  const addTenant = useDataStore((state) => state.addTenant);
+  const removeTenant = useDataStore((state) => state.removeTenant);
+  const changeTenantName = useDataStore((state) => state.changeTenantName);
+  const dates = useDataStore((state) => state.getDates());
+  const selectedDates = useDataStore((state) => state.selectedDates);
+  const toggleCellSelection = useDataStore(
+    (state) => state.toggleCellSelection,
   );
+  const selectAll = useDataStore((state) => state.selectAll);
+  const deselectAll = useDataStore((state) => state.deselectAll);
+
+  const numPeople = tenants.length;
 
   const [selectionStart, setSelectionStart] = useState<(Date | null)[]>(
     Array(numPeople).fill(null),
   );
-
-  const [calcType, setCalcType] = useState<CalculationType>("perNight");
-  const dates = eachDayOfInterval({ start: startDate, end: endDate });
 
   const lastInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +61,6 @@ export const DayTable = ({
       const b = date;
       const [start, end] = a < b ? [a, b] : [b, a];
       const datesToToggle = eachDayOfInterval({ start, end });
-      setSelectedDates;
       datesToToggle.forEach((date) => toggleCellSelection(personIndex, date));
       setSelectionStart((prev) => prev.map(() => null));
     }
@@ -83,53 +68,13 @@ export const DayTable = ({
 
   const handleAddClick = () => {
     addTenant();
-    setSelectedDates((prev) => [...prev, []]);
     setSelectionStart((prev) => [...prev, null]);
     setTimeout(() => lastInputRef.current?.focus(), 100);
   };
 
   const handleDeleteClick = (personIndex: number) => () => {
     removeTenant(personIndex);
-    setSelectedDates((prev) => prev.filter((_, i) => i !== personIndex));
     setSelectionStart((prev) => prev.filter((_, i) => i !== personIndex));
-  };
-
-  const toggleCellSelection = (personIndex: number, date: Date) => {
-    const dateString = n(date);
-    if (!selectedDates[personIndex]!.includes(dateString)) {
-      setSelectedDates((prev) => {
-        const newSelectedDates = [...prev];
-        newSelectedDates[personIndex] = [
-          ...prev[personIndex]!,
-          dateString,
-        ].sort();
-        return newSelectedDates;
-      });
-    } else {
-      setSelectedDates((prev) => {
-        const newSelectedDates = [...prev];
-        newSelectedDates[personIndex] = prev[personIndex]!.filter(
-          (d) => d !== dateString,
-        );
-        return newSelectedDates;
-      });
-    }
-  };
-
-  const selectAll = (personIndex: number) => {
-    setSelectedDates((prev) => {
-      const newSelectedDates = [...prev];
-      newSelectedDates[personIndex] = dates.map((date) => n(date));
-      return newSelectedDates;
-    });
-  };
-
-  const deselectAll = (personIndex: number) => {
-    setSelectedDates((prev) => {
-      const newSelectedDates = [...prev];
-      newSelectedDates[personIndex] = [];
-      return newSelectedDates;
-    });
   };
 
   const isSelected = (personIndex: number, date: Date) => {
@@ -257,20 +202,11 @@ export const DayTable = ({
 
       {selectedDates.some((dates) => dates.length > 0) && (
         <>
-          <CalculationTypeRadioGroup
-            calcType={calcType}
-            setCalcType={setCalcType}
-          />
+          <CalculationTypeRadioGroup />
 
           <div className="h-4" />
 
-          <Summary
-            tenants={tenants}
-            selectedDates={selectedDates}
-            totalPrice={totalPrice}
-            dates={dates}
-            calcType={calcType}
-          />
+          <Summary />
         </>
       )}
     </>

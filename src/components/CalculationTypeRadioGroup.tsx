@@ -9,19 +9,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { type CalculationType } from "@/types/types";
+import { useDataStore } from "@/store/store";
 
-interface CalculationTypeRadioGroupProps {
-  calcType: CalculationType;
-  setCalcType: (calcType: CalculationType) => void;
-}
-
-export type CalculationType = "perNight" | "numNights";
 const labels = ["Fixed price per day", "Fixed price per person-day"];
 
-export const CalculationTypeRadioGroup = ({
-  calcType,
-  setCalcType,
-}: CalculationTypeRadioGroupProps) => {
+export const CalculationTypeRadioGroup = () => {
+  const calcType = useDataStore((state) => state.calcType);
+  const setCalcType = useDataStore((state) => state.setCalcType);
+
   return (
     <>
       <div className="mb-2 flex items-center gap-1">

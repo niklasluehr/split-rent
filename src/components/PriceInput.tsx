@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { useDataStore } from "@/store/store";
 
-interface PriceInputProps {
-  updatePrice: (value: number) => void;
-}
-
-export const PriceInput = ({ updatePrice }: PriceInputProps) => {
+export const PriceInput = () => {
   const [price, setPrice] = useState<string>("1500");
+  const updateStorePrice = useDataStore((state) => state.setTotalPrice);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -19,7 +17,7 @@ export const PriceInput = ({ updatePrice }: PriceInputProps) => {
     }
 
     setPrice(raw);
-    updatePrice(+raw);
+    updateStorePrice(+raw);
   };
 
   return (
