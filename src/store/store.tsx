@@ -1,7 +1,7 @@
 import { n } from "@/lib/utils";
-import { PaymentType, type CalculationType } from "@/types/types";
+import { type PaymentType, type CalculationType } from "@/types/types";
 import { eachDayOfInterval } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { type DateRange } from "react-day-picker";
 import { create } from "zustand";
 
 export interface StoreData {

@@ -1,6 +1,6 @@
-import { CalculationType } from "@/components/CalculationTypeRadioGroup";
 import { eachDayOfInterval } from "date-fns";
 import { fromNString, n } from "./utils";
+import { type CalculationType } from "@/types/types";
 
 interface IParams {
   start: Date;
@@ -74,9 +74,9 @@ export const decodeParams = (query: string) => {
       start: parsedStartDate,
       end: parsedEndDate,
     });
-    const parsedSelectedDates = Array(parsedTenants.length);
+    const parsedSelectedDates = Array(parsedTenants.length) as number[][];
     parsedTenants.forEach((_, i) => {
-      parsedSelectedDates[i] = [];
+      parsedSelectedDates[i] = [] as number[];
     });
     const cols = selectedDates.split(",");
     dates.forEach((date, dateIndex) => {
