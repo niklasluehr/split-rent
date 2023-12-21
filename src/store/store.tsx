@@ -1,5 +1,5 @@
 import { n } from "@/lib/utils";
-import { type CalculationType } from "@/types/types";
+import { PaymentType, type CalculationType } from "@/types/types";
 import { eachDayOfInterval } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { create } from "zustand";
@@ -10,6 +10,7 @@ export interface StoreData {
   tenants: string[];
   selectedDates: number[][];
   calcType: CalculationType;
+  paymentType: PaymentType;
 }
 
 interface StoreType extends StoreData {
@@ -19,6 +20,7 @@ interface StoreType extends StoreData {
   removeTenant: (index: number) => void;
   changeTenantName: (index: number, name: string) => void;
   setCalcType: (calcType: CalculationType) => void;
+  setPaymentType: (paymentType: PaymentType) => void;
   getDates: () => Date[];
   toggleCellSelection: (tenantIndex: number, date: Date) => void;
   selectAll: (tenantIndex: number) => void;
@@ -31,6 +33,7 @@ const initialData: StoreData = {
   tenants: ["", ""],
   selectedDates: [[], []],
   calcType: "perNight",
+  paymentType: "perNight",
 };
 
 export const useDataStore = create<StoreType>()((set, get) => ({
@@ -98,4 +101,5 @@ export const useDataStore = create<StoreType>()((set, get) => ({
     }),
 
   setCalcType: (calcType: CalculationType) => set({ calcType }),
+  setPaymentType: (paymentType: PaymentType) => set({ paymentType }),
 }));

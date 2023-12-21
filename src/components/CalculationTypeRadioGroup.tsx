@@ -12,17 +12,22 @@ import {
 import { type CalculationType } from "@/types/types";
 import { useDataStore } from "@/store/store";
 
-const labels = ["Fixed price per day", "Fixed price per person-day"];
-
 export const CalculationTypeRadioGroup = () => {
   const calcType = useDataStore((state) => state.calcType);
   const setCalcType = useDataStore((state) => state.setCalcType);
+  const paymentType = useDataStore((state) => state.paymentType);
+
+  const dayOrNight = paymentType === "perNight" ? "night" : "day";
+  const labels = [
+    `Fixed price per ${dayOrNight}`,
+    `Fixed price per person-${dayOrNight}`,
+  ];
 
   return (
     <>
       <div className="mb-2 flex items-center gap-1">
         <Label>Method of Calculation</Label>
-        <InfoSheet />
+        <InfoSheet dayOrNight={dayOrNight} />
       </div>
       <RadioGroup
         defaultValue={calcType}
@@ -41,7 +46,14 @@ export const CalculationTypeRadioGroup = () => {
   );
 };
 
-function InfoSheet() {
+interface InfoSheetProps {
+  dayOrNight: string;
+}
+
+function InfoSheet({ dayOrNight }: InfoSheetProps) {
+  const dayOrNightCap =
+    dayOrNight.charAt(0).toUpperCase() + dayOrNight.slice(1);
+
   return (
     <Sheet>
       <SheetTrigger className="hover:cursor-pointer" asChild>
@@ -56,27 +68,32 @@ function InfoSheet() {
               that fits your situation best and is the most fair. Play with the
               app to see how the settings affect the price splitting.
             </p>
-            <h1 className="mt-4 font-bold">Fixed price per day</h1>
+            <h1 className="mt-4 font-bold">Fixed price per {dayOrNight}</h1>
             <p>
-              Take the total price and divide it by the number of days. This is
-              the fixed <i>price-per-day</i>. Then, for each day, split the{" "}
-              <i>price-per-day</i> equally between all present persons on that
-              day.
+              Take the total price and divide it by the number of {dayOrNight}s.
+              This is the fixed <i>price-per-{dayOrNight}</i>. Then, for each{" "}
+              {dayOrNight}, split the <i>price-per-{dayOrNight}</i> equally
+              between all present persons on that
+              {dayOrNight}.
             </p>
             <p>
-              Days where no one is present are split equally by all persons.
+              {dayOrNightCap}s where no one is present are split equally by all
+              persons.
             </p>
             <p>
-              With this method, people pay more for days when there are fewer
-              persons present.
+              With this method, people pay more for {dayOrNight}s when there are
+              fewer persons present.
             </p>
-            <h1 className="mt-4 font-bold">Fixed price per person-day</h1>
+            <h1 className="mt-4 font-bold">
+              Fixed price per person-{dayOrNight}
+            </h1>
             <p>
-              For each person, every day they stay counts as one person-day.
-              Divide the total price by the total number of person-days. This is
-              the fixed <i>price-per-person-day</i>. Then, each person pays the{" "}
-              <i>price-per-person-day</i> multiplied by the number of days they
-              stay.
+              For each person, every {dayOrNight} they stay counts as one
+              person-{dayOrNight}. Divide the total price by the total number of
+              person-{dayOrNight}s. This is the fixed{" "}
+              <i>price-per-person-{dayOrNight}</i>. Then, each person pays the{" "}
+              <i>price-per-person-{dayOrNight}</i> multiplied by the number of{" "}
+              {dayOrNight}s they stay.
             </p>
             <p>
               With this method, everyone pays an amount proportional to the time

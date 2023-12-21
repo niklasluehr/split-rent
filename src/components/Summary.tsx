@@ -1,6 +1,7 @@
 import { n } from "@/lib/utils";
 import { sampleTenants } from "./DayTable";
 import { useDataStore } from "@/store/store";
+import { addDays } from "date-fns";
 
 export const Summary = () => {
   const totalPrice = useDataStore((state) => state.totalPrice);
@@ -8,17 +9,36 @@ export const Summary = () => {
   const selectedDates = useDataStore((state) => state.selectedDates);
   const calcType = useDataStore((state) => state.calcType);
   const dates = useDataStore((state) => state.getDates());
-  const dayPrice = totalPrice / dates.length;
+  const paymentType = useDataStore((state) => state.paymentType);
+
+  const getBinaryMatrix = () => {
+    if (paymentType === "perDay") {
+      return dates.map((date) =>
+        Array(tenants.length)
+          .fill(false)
+          .map((_, personIndex) =>
+            selectedDates[personIndex]!.includes(n(date)),
+          ),
+      );
+    } else {
+      return dates.slice(0, -1).map((date) =>
+        Array(tenants.length)
+          .fill(false)
+          .map(
+            (_, personIndex) =>
+              selectedDates[personIndex]!.includes(n(date)) &&
+              selectedDates[personIndex]!.includes(n(addDays(date, 1))),
+          ),
+      );
+    }
+  };
 
   const getPricesSplitPerNight = () => {
-    const binaryMatrix = dates.map((date) =>
-      Array(tenants.length)
-        .fill(false)
-        .map((_, personIndex) => selectedDates[personIndex]!.includes(n(date))),
-    );
+    const binaryMatrix = getBinaryMatrix();
     const countVector = binaryMatrix.map((row) =>
       row.reduce((acc, curr) => acc + +curr, 0),
     );
+    const dayPrice = totalPrice / countVector.length;
 
     const prices = Array(selectedDates.length).fill(0) as number[];
     binaryMatrix.forEach((row, dateIndex) => {
@@ -39,28 +59,20 @@ export const Summary = () => {
   };
 
   const getPricesSplitNumNights = () => {
-    let numDays = 0;
-    dates.forEach((date) => {
-      selectedDates.forEach((personDates) => {
-        numDays += +personDates.includes(n(date));
-      });
-    });
+    const binaryMatrix = getBinaryMatrix();
+    const numDays = binaryMatrix.flat().reduce((acc, curr) => acc + +curr, 0);
     if (numDays === 0) {
       return Array(tenants.length).fill(
         totalPrice / tenants.length,
       ) as number[];
     }
-
     const dayPrice = totalPrice / numDays;
-    const prices = Array(selectedDates.length).fill(0) as number[];
-    dates.forEach((date) => {
-      selectedDates.forEach((personDates, personIndex) => {
-        if (personDates.includes(n(date))) {
-          prices[personIndex] += dayPrice;
-        }
-      });
-    });
-
+    const binaryMatrixT = binaryMatrix[0]!.map((_, colIndex) =>
+      binaryMatrix.map((row) => row[colIndex]!),
+    );
+    const prices = binaryMatrixT.map(
+      (row) => row.reduce((acc, curr) => acc + +curr, 0) * dayPrice,
+    );
     return prices;
   };
 
@@ -77,10 +89,7 @@ export const Summary = () => {
       <table>
         <tbody className="">
           {tenants.map((name, personIndex) => (
-            <tr
-              key={personIndex}
-              className="border-b-2 last:border-b-0 even:bg-muted"
-            >
+            <tr key={personIndex} className="border-b-2 even:bg-muted">
               <td className="">
                 {name.length > 0 ? name : sampleTenants[personIndex]}
               </td>
@@ -89,6 +98,15 @@ export const Summary = () => {
               </td>
             </tr>
           ))}
+          <tr>
+            <td className="font-bold">Total</td>
+            <td className="text-right font-bold">
+              {getPrices()
+                .reduce((acc, curr) => acc + curr, 0)
+                .toFixed(2)}{" "}
+              €
+            </td>
+          </tr>
         </tbody>
       </table>
     </>

@@ -9,6 +9,7 @@ import { Summary } from "./Summary";
 import { CalculationTypeRadioGroup } from "./CalculationTypeRadioGroup";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useDataStore } from "@/store/store";
+import { PaymentTypeRadioGroup } from "./PaymentTypeRadioGroup";
 
 export const sampleTenants = [
   "Alice",
@@ -202,6 +203,8 @@ export const DayTable = () => {
 
       {selectedDates.some((dates) => dates.length > 0) && (
         <>
+          <PaymentTypeRadioGroup />
+          <div className="h-4" />
           <CalculationTypeRadioGroup />
 
           <div className="h-4" />
