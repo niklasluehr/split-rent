@@ -98,9 +98,9 @@ export const Summary = () => {
               </td>
             </tr>
           ))}
-          <tr>
-            <td className="font-bold">Total</td>
-            <td className="text-right font-bold">
+          <tr className="text-[0.9375rem] font-bold">
+            <td>Total</td>
+            <td className="text-right">
               {getPrices()
                 .reduce((acc, curr) => acc + curr, 0)
                 .toFixed(2)}{" "}
