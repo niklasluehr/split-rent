@@ -87,6 +87,10 @@ export const DayTable = () => {
     return selectionStart[personIndex]?.getTime() === date.getTime();
   };
 
+  const isTableClear = () => {
+    return selectedDates.every((dates) => dates.length === 0);
+  };
+
   const isRangeStart = (personIndex: number, date: Date) => {
     const dateString = n(date);
     const nextDay = addDays(date, 1);
@@ -171,7 +175,7 @@ export const DayTable = () => {
             </tr>
             {dates.map((date) => (
               <tr key={n(date)} className="even:bg-muted">
-                <th className="min-w-[3.5rem] pr-2 text-sm font-normal">
+                <th className="min-w-[3.25rem] text-left text-sm font-normal">
                   {format(date, "LLL dd")}
                 </th>
                 {tenants.map((_, personIndex) => (
@@ -201,7 +205,7 @@ export const DayTable = () => {
 
       <div className="h-6" />
 
-      {selectedDates.some((dates) => dates.length > 0) && (
+      {!isTableClear() && (
         <>
           <PaymentTypeRadioGroup />
           <div className="h-4" />
