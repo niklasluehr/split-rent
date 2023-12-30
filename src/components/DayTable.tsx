@@ -3,12 +3,12 @@ import { cn, n } from "@/lib/utils";
 import { addDays, eachDayOfInterval } from "date-fns";
 import format from "date-fns/format";
 import {
-  Check,
+  CalendarCheck,
+  CalendarX,
   CornerLeftDown,
   CornerLeftUp,
   PlusCircle,
   Trash2,
-  X,
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { Separator } from "./ui/separator";
@@ -151,30 +151,33 @@ export const DayTable = () => {
                   <div className="flex flex-col items-center justify-center">
                     <button
                       disabled={personIndex < 2}
-                      className="text-destructive disabled:text-gray-400"
+                      className="text-gray-700 disabled:text-gray-400"
                       tabIndex={-1}
                       onClick={handleDeleteClick(personIndex)}
                     >
-                      <Trash2 size={20} />
+                      <Trash2 size={24} />
                     </button>
-                    <Separator className="mb-1 mt-2" />
-                    <button
-                      tabIndex={-1}
-                      onClick={() => selectAll(personIndex)}
-                    >
-                      <Check size={26} className="text-green-900" />
-                    </button>
-                    <button
-                      tabIndex={-1}
-                      onClick={() => deselectAll(personIndex)}
-                    >
-                      <X size={26} className="text-destructive" />
-                    </button>
+                    <Separator className="mb-2 mt-3" />
+                    {selectedDates[personIndex]!.length === 0 ? (
+                      <button
+                        tabIndex={-1}
+                        onClick={() => selectAll(personIndex)}
+                      >
+                        <CalendarCheck size={24} className="text-green-800" />
+                      </button>
+                    ) : (
+                      <button
+                        tabIndex={-1}
+                        onClick={() => deselectAll(personIndex)}
+                      >
+                        <CalendarX size={24} className="text-destructive" />
+                      </button>
+                    )}
                     <input
                       ref={
                         personIndex === tenants.length - 1 ? lastInputRef : null
                       }
-                      className="w-full bg-background text-center"
+                      className="mt-1 w-full bg-background text-center"
                       placeholder={sampleTenants[personIndex]}
                       value={tenants[personIndex]}
                       onChange={(e) =>
@@ -187,7 +190,7 @@ export const DayTable = () => {
               ))}
               <th className="pl-2">
                 <button onClick={handleAddClick}>
-                  <PlusCircle size={20} className="text-primary" />
+                  <PlusCircle size={24} className="text-primary" />
                 </button>
               </th>
             </tr>
