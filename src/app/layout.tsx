@@ -2,8 +2,14 @@ import { Nav } from "@/components/Nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import localFont from "next/font/local";
 
 import { Inter } from "next/font/google";
+
+const virgil = localFont({
+  src: "../../public/fonts/Virgil.woff2",
+  variable: "--font-virgil",
+});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans ${inter.variable} ${virgil.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

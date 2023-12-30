@@ -2,7 +2,14 @@
 import { cn, n } from "@/lib/utils";
 import { addDays, eachDayOfInterval } from "date-fns";
 import format from "date-fns/format";
-import { Check, PlusCircle, Trash2, X } from "lucide-react";
+import {
+  Check,
+  CornerLeftDown,
+  CornerLeftUp,
+  PlusCircle,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { Separator } from "./ui/separator";
 import { Summary } from "./Summary";
@@ -50,6 +57,8 @@ export const DayTable = () => {
     Array(numPeople).fill(null),
   );
 
+  const [showTutorial, setShowTutorial] = useState(true);
+
   const lastInputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = (personIndex: number, date: Date) => {
@@ -63,8 +72,13 @@ export const DayTable = () => {
       const [start, end] = a < b ? [a, b] : [b, a];
       const datesToToggle = eachDayOfInterval({ start, end });
       datesToToggle.forEach((date) => toggleCellSelection(personIndex, date));
-      setSelectionStart((prev) => prev.map(() => null));
+      clearSelectionStart();
+      setShowTutorial(false);
     }
+  };
+
+  const clearSelectionStart = () => {
+    setSelectionStart((prev) => prev.map(() => null));
   };
 
   const handleAddClick = () => {
@@ -89,6 +103,10 @@ export const DayTable = () => {
 
   const isTableClear = () => {
     return selectedDates.every((dates) => dates.length === 0);
+  };
+
+  const getSelectionStartIndex = () => {
+    return selectionStart.findIndex((date) => date !== null);
   };
 
   const isRangeStart = (personIndex: number, date: Date) => {
@@ -173,7 +191,7 @@ export const DayTable = () => {
                 </button>
               </th>
             </tr>
-            {dates.map((date) => (
+            {dates.map((date, dateIndex) => (
               <tr key={n(date)} className="even:bg-muted">
                 <th className="min-w-[3.25rem] text-left text-sm font-normal">
                   {format(date, "LLL dd")}
@@ -182,7 +200,7 @@ export const DayTable = () => {
                   <td
                     onClick={() => handleClick(personIndex, date)}
                     className={cn(
-                      "min-w-[2.5rem] cursor-pointer border-2 text-center text-sm leading-none text-muted-foreground",
+                      "relative min-w-[2.5rem] cursor-pointer border-2 text-center text-sm leading-none text-muted-foreground",
                       {
                         "bg-primary": isSelected(personIndex, date),
                         "border-dashed border-foreground ": isSelectionStart(
@@ -194,6 +212,22 @@ export const DayTable = () => {
                     key={`${n(date)}-${personIndex}`}
                   >
                     {getText(personIndex, date)}
+                    {isTableClear() && showTutorial && (
+                      <>
+                        {getSelectionStartIndex() == -1 &&
+                          personIndex === 0 &&
+                          dateIndex === 0 && (
+                            <TutorialHint text="click once to select start date" />
+                          )}
+                        {getSelectionStartIndex() == personIndex &&
+                          dateIndex == Math.min(7, dates.length - 1) && (
+                            <TutorialHint
+                              text="click again to select end date"
+                              arrowDown
+                            />
+                          )}
+                      </>
+                    )}
                   </td>
                 ))}
               </tr>
@@ -219,3 +253,32 @@ export const DayTable = () => {
     </>
   );
 };
+
+interface TutorialHintProps {
+  text: string;
+  arrowDown?: boolean;
+}
+
+const TutorialHint = ({ text, arrowDown }: TutorialHintProps) => (
+  <div
+    className={cn("absolute left-4 top-1 z-10 flex", {
+      "-top-5": arrowDown,
+    })}
+  >
+    {arrowDown ? (
+      <CornerLeftDown size={30} className="text-primary-foreground" />
+    ) : (
+      <CornerLeftUp size={30} className="text-primary-foreground" />
+    )}
+    <span
+      className={cn(
+        "virgil absolute left-[1.625rem] top-2 rounded-2xl border-2 border-primary-foreground bg-primary px-3 py-2 text-primary-foreground",
+        {
+          "-top-3": arrowDown,
+        },
+      )}
+    >
+      {text}
+    </span>
+  </div>
+);
