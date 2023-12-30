@@ -21,21 +21,21 @@ import { PaymentTypeRadioGroup } from "./PaymentTypeRadioGroup";
 export const sampleTenants = [
   "Alice",
   "Bob",
-  "Charlie",
+  "Claire",
   "David",
   "Eve",
   "Frank",
   "Grace",
-  "Heidi",
-  "Ivan",
-  "Judy",
-  "Mallory",
-  "Oscar",
-  "Peggy",
-  "Sybil",
-  "Trent",
-  "Victor",
-  "Walter",
+  "Hans",
+  "Ida",
+  "Joe",
+  "Kate",
+  "Luke",
+  "Mary",
+  "Nick",
+  "Olivia",
+  "Paul",
+  "Rose",
 ];
 
 export const DayTable = () => {
@@ -141,7 +141,7 @@ export const DayTable = () => {
 
   return (
     <>
-      <ScrollArea className="whitespace-nowrap pb-2 sm:w-fit">
+      <ScrollArea className="whitespace-nowrap pb-2">
         <table className="border-separate pr-1">
           <tbody>
             <tr>
