@@ -2,13 +2,13 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Info } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "./ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./ui/drawer";
 import { type CalculationType } from "@/types/types";
 import { useDataStore } from "@/store/store";
 
@@ -27,7 +27,7 @@ export const CalculationTypeRadioGroup = () => {
     <>
       <div className="mb-2 flex items-center gap-1">
         <Label>Method of Calculation</Label>
-        <InfoSheet dayOrNight={dayOrNight} />
+        <InfoDrawer dayOrNight={dayOrNight} />
       </div>
       <RadioGroup
         defaultValue={calcType}
@@ -46,23 +46,23 @@ export const CalculationTypeRadioGroup = () => {
   );
 };
 
-interface InfoSheetProps {
+interface InfoDrawerProps {
   dayOrNight: string;
 }
 
-function InfoSheet({ dayOrNight }: InfoSheetProps) {
+function InfoDrawer({ dayOrNight }: InfoDrawerProps) {
   const dayOrNightCap =
     dayOrNight.charAt(0).toUpperCase() + dayOrNight.slice(1);
 
   return (
-    <Sheet>
-      <SheetTrigger className="hover:cursor-pointer" asChild>
+    <Drawer>
+      <DrawerTrigger className="hover:cursor-pointer" asChild>
         <Info size={18} />
-      </SheetTrigger>
-      <SheetContent side="bottom">
-        <SheetHeader className="mx-auto max-w-lg text-left">
-          <SheetTitle>Methods of Calculation</SheetTitle>
-          <SheetDescription>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="mx-auto max-w-lg text-left">
+          <DrawerTitle>Methods of Calculation</DrawerTitle>
+          <DrawerDescription>
             <p>
               There is different ways to split the rental price. Choose the one
               that fits your situation best and is the most fair. Play with the
@@ -99,9 +99,9 @@ function InfoSheet({ dayOrNight }: InfoSheetProps) {
               With this method, everyone pays an amount proportional to the time
               they stay.
             </p>
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
+          </DrawerDescription>
+        </DrawerHeader>
+      </DrawerContent>
+    </Drawer>
   );
 }
