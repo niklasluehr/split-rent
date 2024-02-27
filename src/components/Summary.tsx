@@ -2,6 +2,7 @@ import { n } from "@/lib/utils";
 import { sampleTenants } from "./DayTable";
 import { useDataStore } from "@/store/store";
 import { addDays } from "date-fns";
+import { ShareDialog } from "./ShareDialog";
 
 export const Summary = () => {
   const totalPrice = useDataStore((state) => state.totalPrice);
@@ -85,7 +86,7 @@ export const Summary = () => {
   };
 
   return (
-    <>
+    <div className="flex items-center gap-12">
       <table>
         <tbody className="">
           {tenants.map((name, personIndex) => (
@@ -109,6 +110,7 @@ export const Summary = () => {
           </tr>
         </tbody>
       </table>
-    </>
+      <ShareDialog />
+    </div>
   );
 };
