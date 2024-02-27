@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import localFont from "next/font/local";
 
 import { Inter } from "next/font/google";
+import { Footer } from "@/components/Footer";
 
 const virgil = localFont({
   src: "../../public/fonts/Virgil.woff2",
@@ -29,7 +30,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} ${virgil.variable}`}>
+      <body
+        className={`font-sans ${inter.variable} ${virgil.variable} relative min-h-screen`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -38,6 +41,7 @@ export default function RootLayout({
         >
           <Nav />
           {children}
+          <Footer />
         </ThemeProvider>
         <Analytics />
       </body>
