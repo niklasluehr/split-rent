@@ -1,12 +1,21 @@
 import { eachDayOfInterval } from "date-fns";
 import { fromNString, n } from "./utils";
-import { type CalculationType } from "@/types/types";
+import { PaymentType, type CalculationType } from "@/types/types";
+
+const PARAM_START = "s";
+const PARAM_END = "e";
+const PARAM_TOTAL_PRICE = "p";
+const PARAM_CALC_TYPE = "cm";
+const PARAM_PAYMENT_TYPE = "pm";
+const PARAM_TENANTS = "t";
+const PARAM_SELECTED_DATES = "b";
 
 interface IParams {
   start: Date;
   end: Date;
   totalPrice: number;
-  calcMethod: CalculationType;
+  calcType: CalculationType;
+  paymentType: PaymentType;
   tenants: string[];
   selectedDates: number[][];
 }
@@ -15,17 +24,19 @@ export const encodeParams = ({
   start,
   end,
   totalPrice,
-  calcMethod,
+  calcType,
+  paymentType,
   tenants,
   selectedDates,
 }: IParams) => {
   const q =
-    `?s=${n(start)}` +
-    `&e=${n(end)}` +
-    `&p=${totalPrice}` +
-    `&m=${calcMethod}` +
-    `&t=${tenants.join(",")}` +
-    `&b=${getBinaryString(start, end, selectedDates)}`;
+    `?${PARAM_START}=${n(start)}` +
+    `&${PARAM_END}=${n(end)}` +
+    `&${PARAM_TOTAL_PRICE}=${totalPrice}` +
+    `&${PARAM_CALC_TYPE}=${calcType}` +
+    `&${PARAM_PAYMENT_TYPE}=${paymentType}` +
+    `&${PARAM_TENANTS}=${tenants.join(",")}` +
+    `&${PARAM_SELECTED_DATES}=${getBinaryString(start, end, selectedDates)}`;
   return q;
 };
 
@@ -45,18 +56,20 @@ const getBinaryString = (start: Date, end: Date, selectedDates: number[][]) => {
 
 export const decodeParams = (query: string) => {
   const params = new URLSearchParams(query);
-  const start = params.get("s");
-  const end = params.get("e");
-  const totalPrice = params.get("p");
-  const calcMethod = params.get("m");
-  const tenants = params.get("t");
-  const selectedDates = params.get("b");
+  const start = params.get(PARAM_START);
+  const end = params.get(PARAM_END);
+  const totalPrice = params.get(PARAM_TOTAL_PRICE);
+  const calcType = params.get(PARAM_CALC_TYPE);
+  const paymentType = params.get(PARAM_PAYMENT_TYPE);
+  const tenants = params.get(PARAM_TENANTS);
+  const selectedDates = params.get(PARAM_SELECTED_DATES);
 
   if (
     !start ||
     !end ||
     !totalPrice ||
-    !calcMethod ||
+    !calcType ||
+    !paymentType ||
     !tenants ||
     !selectedDates
   ) {
@@ -67,7 +80,8 @@ export const decodeParams = (query: string) => {
     const parsedStartDate = fromNString(start);
     const parsedEndDate = fromNString(end);
     const parsedTotalPrice = Number(totalPrice);
-    const parsedCalcMethod = calcMethod as CalculationType;
+    const parsedCalcType = calcType as CalculationType;
+    const parsedPaymentType = paymentType as PaymentType;
     const parsedTenants = tenants.split(",");
 
     const dates = eachDayOfInterval({
@@ -91,8 +105,9 @@ export const decodeParams = (query: string) => {
       parsedStartDate,
       parsedEndDate,
       parsedTotalPrice,
-      parsedCalcMethod,
-      parsedTenants: parsedTenants,
+      parsedCalcType,
+      parsedPaymentType,
+      parsedTenants,
       parsedSelectedDates,
     };
   } catch (e) {
