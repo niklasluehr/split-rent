@@ -7,7 +7,7 @@ import { decodeParams } from "@/lib/urlSharing";
 import { useDataStore } from "@/store/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DateRange } from "react-day-picker";
+import { type DateRange } from "react-day-picker";
 
 export default function HomePage() {
   const dateRange = useDataStore((state) => state.dateRange);

@@ -1,7 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 import { fromNString, n } from "./utils";
-import { PaymentType, type CalculationType } from "@/types/types";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { type PaymentType, type CalculationType } from "@/types/types";
+import { type ReadonlyURLSearchParams } from "next/navigation";
 
 const PARAM_START = "s";
 const PARAM_END = "e";

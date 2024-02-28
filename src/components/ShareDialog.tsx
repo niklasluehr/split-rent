@@ -32,8 +32,8 @@ export const ShareDialog = () => {
   const [linkCopied, setLinkCopied] = useState(false);
 
   const params = encodeParams({
-    start: dateRange?.from!,
-    end: dateRange?.to!,
+    start: dateRange!.from!,
+    end: dateRange!.to!,
     totalPrice,
     calcType,
     paymentType,
@@ -64,7 +64,7 @@ export const ShareDialog = () => {
         <DialogHeader className="text-left">
           <DialogTitle>Share link</DialogTitle>
           <DialogDescription className="flex gap-1">
-            Send this link to your friends if they don't trust you
+            Send this link to your friends if they don{"'"}t trust you
             <Image src={emoji_wink} alt="winking face" width={20} height={20} />
           </DialogDescription>
         </DialogHeader>
