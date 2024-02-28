@@ -25,6 +25,7 @@ interface StoreType extends StoreData {
   toggleCellSelection: (tenantIndex: number, date: Date) => void;
   selectAll: (tenantIndex: number) => void;
   deselectAll: (tenantIndex: number) => void;
+  setState: (data: Partial<StoreData>) => void;
 }
 
 const initialData: StoreData = {
@@ -102,4 +103,6 @@ export const useDataStore = create<StoreType>()((set, get) => ({
 
   setCalcType: (calcType: CalculationType) => set({ calcType }),
   setPaymentType: (paymentType: PaymentType) => set({ paymentType }),
+
+  setState: (data: Partial<StoreData>) => set(data),
 }));

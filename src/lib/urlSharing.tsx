@@ -1,6 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 import { fromNString, n } from "./utils";
 import { PaymentType, type CalculationType } from "@/types/types";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
 const PARAM_START = "s";
 const PARAM_END = "e";
@@ -54,8 +55,7 @@ const getBinaryString = (start: Date, end: Date, selectedDates: number[][]) => {
   return binaryMatrix.map((row) => row.join("")).join(",");
 };
 
-export const decodeParams = (query: string) => {
-  const params = new URLSearchParams(query);
+export const decodeParams = (params: ReadonlyURLSearchParams) => {
   const start = params.get(PARAM_START);
   const end = params.get(PARAM_END);
   const totalPrice = params.get(PARAM_TOTAL_PRICE);
@@ -102,13 +102,13 @@ export const decodeParams = (query: string) => {
     });
 
     return {
-      parsedStartDate,
-      parsedEndDate,
-      parsedTotalPrice,
-      parsedCalcType,
-      parsedPaymentType,
-      parsedTenants,
-      parsedSelectedDates,
+      start: parsedStartDate,
+      end: parsedEndDate,
+      totalPrice: parsedTotalPrice,
+      calcType: parsedCalcType,
+      paymentType: parsedPaymentType,
+      tenants: parsedTenants,
+      selectedDates: parsedSelectedDates,
     };
   } catch (e) {
     return null;

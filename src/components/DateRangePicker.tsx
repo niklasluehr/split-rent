@@ -16,9 +16,13 @@ import { Label } from "./ui/label";
 import { useState } from "react";
 import { useDataStore } from "@/store/store";
 
-export const DateRangePicker = () => {
+interface DateRangePickerProps {
+  initial?: DateRange;
+}
+
+export const DateRangePicker = ({ initial }: DateRangePickerProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(initial);
   const updateStoreDateRange = useDataStore((state) => state.setDateRange);
 
   const handleSelect = (range: DateRange | undefined) => {
