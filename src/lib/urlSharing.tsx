@@ -6,10 +6,10 @@ import { type ReadonlyURLSearchParams } from "next/navigation";
 const PARAM_START = "s";
 const PARAM_END = "e";
 const PARAM_TOTAL_PRICE = "p";
-const PARAM_CALC_TYPE = "cm";
+const PARAM_CALC_TYPE = "cm"; //calculation method
 const PARAM_PAYMENT_TYPE = "pm";
 const PARAM_TENANTS = "t";
-const PARAM_SELECTED_DATES = "b";
+const PARAM_SELECTED_DATES = "b"; //binary matrix
 
 interface IParams {
   start: Date;
