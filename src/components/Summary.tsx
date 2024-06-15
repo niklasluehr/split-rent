@@ -141,7 +141,10 @@ export const Summary = () => {
               <td>Total</td>
               {showBreakdown && (
                 <>
-                  <td colSpan={2} className="pl-8 text-left sm:pl-16">
+                  <td
+                    colSpan={calcType === "perPersonNight" ? 2 : 3}
+                    className="pl-8 text-left text-sm sm:pl-16"
+                  >
                     {calcType === "perPersonNight" &&
                       xDaysOrNightsWithType(numPersonNights)}
                   </td>
@@ -176,8 +179,10 @@ const BreakdownPerPersonNight = ({
 
   return (
     <>
-      <td className="pl-8 text-left sm:pl-16">{xDaysOrNights(personNights)}</td>
-      <td className="pr-8 text-right sm:pr-16">
+      <td className="pl-8 text-left text-sm sm:pl-16">
+        {xDaysOrNights(personNights)}
+      </td>
+      <td className="pr-8 text-right text-sm sm:pr-16">
         {personNights === 0 ? "" : `* ${pricePerNight.toFixed(2)}€`}
       </td>
     </>
@@ -208,17 +213,18 @@ const BreakDownPerCalendarNight = ({
 
   return (
     <>
-      <td className="pl-2 pr-1 text-left text-sm leading-snug sm:pl-12">
+      <td className="py-2 pl-2 pr-0.5 text-left text-sm leading-snug sm:pl-12 sm:pr-2">
         {arrayToName.map(
-          (numNights, numCoTenants) =>
-            numNights > 0 && (
-              <div>
-                {`${xDaysOrNights(numNights)} ${withXPersons(numCoTenants)}`}
-              </div>
-            ),
+          (numNights) => numNights > 0 && <div>{xDaysOrNights(numNights)}</div>,
         )}
       </td>
-      <td className="pl-1 pr-2 text-right text-sm leading-snug sm:pr-12">
+      <td className="py-2 pr-1 text-left text-sm leading-snug sm:pr-2">
+        {arrayToName.map(
+          (numNights, numCoTenants) =>
+            numNights > 0 && <div>{withXPersons(numCoTenants)}</div>,
+        )}
+      </td>
+      <td className="py-2 pl-1 pr-2 text-right text-sm leading-snug sm:pr-12">
         {arrayToName.map(
           (numNights, numCoTenants) =>
             numNights > 0 && (
