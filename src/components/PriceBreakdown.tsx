@@ -26,7 +26,7 @@ export const PriceBreakdown = () => {
           </div>
         }
       >
-        {calcType === "perNight" ? (
+        {calcType === "perCalendarNight" ? (
           <BreakdownPerNight />
         ) : (
           <BreakdownNumNights />

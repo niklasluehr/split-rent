@@ -19,7 +19,7 @@ export const CalculationTypeRadioGroup = () => {
 
   const dayOrNight = paymentType === "perNight" ? "night" : "day";
   const labels = [
-    `Fixed price per ${dayOrNight}`,
+    `Fixed price per calendar-${dayOrNight}`,
     `Fixed price per person-${dayOrNight}`,
   ];
 
@@ -33,7 +33,7 @@ export const CalculationTypeRadioGroup = () => {
         defaultValue={calcType}
         onValueChange={(e) => setCalcType(e as CalculationType)}
       >
-        {["perNight", "numNights"].map((value, index) => (
+        {["perCalendarNight", "perPersonNight"].map((value, index) => (
           <div key={value} className="flex items-center gap-2">
             <RadioGroupItem value={value} id={value} />
             <Label className="text-base leading-tight" htmlFor={value}>
@@ -68,13 +68,15 @@ function InfoDrawer({ dayOrNight }: InfoDrawerProps) {
               that fits your situation best and is the most fair. Play with the
               app to see how the settings affect the price splitting.
             </p>
-            <h1 className="mt-4 font-bold">Fixed price per {dayOrNight}</h1>
+            <h1 className="mt-4 font-bold">
+              Fixed price per calendar-{dayOrNight}
+            </h1>
             <p>
               Take the total price and divide it by the number of {dayOrNight}s.
-              This is the fixed <i>price-per-{dayOrNight}</i>. Then, for each{" "}
-              {dayOrNight}, split the <i>price-per-{dayOrNight}</i> equally
-              between all present persons on that
-              {dayOrNight}.
+              This is the fixed <i>price-per-calendar-{dayOrNight}</i>. Then,
+              for each {dayOrNight}, split the{" "}
+              <i>price-per-calendar-{dayOrNight}</i> equally between all present
+              persons on that {dayOrNight}.
             </p>
             <p>
               {dayOrNightCap}s where no one is present are split equally by all

@@ -33,7 +33,7 @@ const initialData: StoreData = {
   totalPrice: 1500,
   tenants: ["", ""],
   selectedDates: [[], []],
-  calcType: "perNight",
+  calcType: "perCalendarNight",
   paymentType: "perNight",
 };
 

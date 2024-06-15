@@ -3,12 +3,12 @@
 import { sampleTenants } from "./DayTable";
 import { useDataStore } from "@/store/store";
 import { ShareDialog } from "./ShareDialog";
-import { PriceBreakdown } from "./PriceBreakdown";
 import { useCalculationData } from "@/hooks/useCalculationData";
 import { useState } from "react";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
+import { useDayOrNight } from "@/hooks/useDayOrNight";
 
 export const Summary = () => {
   const totalPrice = useDataStore((state) => state.totalPrice);
@@ -16,12 +16,15 @@ export const Summary = () => {
   const selectedDates = useDataStore((state) => state.selectedDates);
   const calcType = useDataStore((state) => state.calcType);
 
+  const { xDaysOrNightsWithType } = useDayOrNight();
+
   const { binaryMatrix, numPersonNights } = useCalculationData();
   const binaryMatrixT = binaryMatrix[0]!.map((_, colIndex) =>
     binaryMatrix.map((row) => row[colIndex]!),
   );
-  const paymentType = useDataStore((state) => state.paymentType);
-  const dayOrNight = paymentType === "perNight" ? "night" : "day";
+  const personNightsArray = binaryMatrixT.map((row) =>
+    row.reduce((acc, curr) => acc + +curr, 0),
+  );
 
   const [showBreakdown, setShowBreakdown] = useState(false);
 
@@ -63,7 +66,7 @@ export const Summary = () => {
   };
 
   const getPrices = () => {
-    if (calcType === "perNight") {
+    if (calcType === "perCalendarNight") {
       return getPricesSplitPerNight();
     } else {
       return getPricesSplitNumNights();
@@ -95,8 +98,10 @@ export const Summary = () => {
                 <td className="">
                   {name.length > 0 ? name : sampleTenants[personIndex]}
                 </td>
-                {showBreakdown && calcType === "numNights" && (
-                  <BreakdownPerPersonNight personIndex={personIndex} />
+                {showBreakdown && calcType === "perPersonNight" && (
+                  <BreakdownPerPersonNight
+                    personNights={personNightsArray[personIndex]!}
+                  />
                 )}
                 <td
                   className={cn("pl-16 text-right", {
@@ -110,10 +115,12 @@ export const Summary = () => {
             <tr className="text-[0.9375rem] font-bold">
               <td>Total</td>
               {showBreakdown && (
-                <td className="px-8 text-left sm:px-16">
-                  {calcType === "numNights" &&
-                    `${numPersonNights} person-${dayOrNight}s`}
-                </td>
+                <>
+                  <td colSpan={2} className="pl-8 text-left sm:pl-16">
+                    {calcType === "perPersonNight" &&
+                      xDaysOrNightsWithType(numPersonNights)}
+                  </td>
+                </>
               )}
               <td className="text-right">
                 {getPrices()
@@ -126,37 +133,28 @@ export const Summary = () => {
         </table>
       </div>
       <ShareDialog />
-      {/* <PriceBreakdown /> */}
     </>
   );
 };
 
 interface BreakdownPerPersonNightProps {
-  personIndex: number;
+  personNights: number;
 }
 
 const BreakdownPerPersonNight = ({
-  personIndex,
+  personNights,
 }: BreakdownPerPersonNightProps) => {
   const totalPrice = useDataStore((state) => state.totalPrice);
-  const { binaryMatrix, numPersonNights } = useCalculationData();
+  const { numPersonNights } = useCalculationData();
   const pricePerNight = totalPrice / numPersonNights;
-  const binaryMatrixT = binaryMatrix[0]!.map((_, colIndex) =>
-    binaryMatrix.map((row) => row[colIndex]!),
-  );
-  const personNightsArray = binaryMatrixT.map((row) =>
-    row.reduce((acc, curr) => acc + +curr, 0),
-  );
-  const paymentType = useDataStore((state) => state.paymentType);
-  const dayOrNight = paymentType === "perNight" ? "night" : "day";
+  const { xDaysOrNights } = useDayOrNight();
 
   return (
-    <td className="px-8 text-left sm:px-16">
-      {personNightsArray[personIndex] === 0
-        ? `0 ${dayOrNight}s`
-        : `${
-            personNightsArray[personIndex]
-          } ${dayOrNight}s * ${pricePerNight.toFixed(2)}€`}
-    </td>
+    <>
+      <td className="pl-8 text-left sm:pl-16">{xDaysOrNights(personNights)}</td>
+      <td className="pr-8 text-right sm:pr-16">
+        {personNights === 0 ? "" : `* ${pricePerNight.toFixed(2)}€`}
+      </td>
+    </>
   );
 };
