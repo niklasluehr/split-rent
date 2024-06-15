@@ -191,5 +191,43 @@ interface BreakdownPerCalendarNightProps {
 const BreakDownPerCalendarNight = ({
   arrayToName,
 }: BreakdownPerCalendarNightProps) => {
-  return <></>;
+  const totalPrice = useDataStore((state) => state.totalPrice);
+  const { numCalendarNights } = useCalculationData();
+  const pricePerNight = totalPrice / numCalendarNights;
+  const { xDaysOrNights } = useDayOrNight();
+
+  const withXPersons = (numCoTenants: number) => {
+    if (numCoTenants === 0) {
+      return "alone";
+    }
+    return `w/ ${numCoTenants + 1} person${numCoTenants === 0 ? "" : "s"}`;
+  };
+
+  const pricePerNightWithCoTenants = (numCoTenants: number) =>
+    (pricePerNight / (numCoTenants + 1)).toFixed(2);
+
+  return (
+    <>
+      <td className="pl-2 pr-1 text-left text-sm leading-snug sm:pl-12">
+        {arrayToName.map(
+          (numNights, numCoTenants) =>
+            numNights > 0 && (
+              <div>
+                {`${xDaysOrNights(numNights)} ${withXPersons(numCoTenants)}`}
+              </div>
+            ),
+        )}
+      </td>
+      <td className="pl-1 pr-2 text-right text-sm leading-snug sm:pr-12">
+        {arrayToName.map(
+          (numNights, numCoTenants) =>
+            numNights > 0 && (
+              <div>
+                {`${numNights}*${pricePerNightWithCoTenants(numCoTenants)}€`}
+              </div>
+            ),
+        )}
+      </td>
+    </>
+  );
 };
