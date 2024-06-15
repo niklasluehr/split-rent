@@ -18,9 +18,9 @@ export const useCalculationData = () => {
   const numPersonNights = binaryMatrix
     .flat()
     .reduce((acc, curr) => acc + +curr, 0);
-  const numNights = binaryMatrix.length;
+  const numCalendarNights = binaryMatrix.length;
 
-  return { binaryMatrix, numPersonNights, numNights };
+  return { binaryMatrix, numPersonNights, numCalendarNights };
 };
 
 const getBinaryMatrix = (
