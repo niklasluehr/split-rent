@@ -86,7 +86,11 @@ export const Summary = () => {
             Show price breakdown
           </Label>
         </div>
-        <table>
+        <table
+          className={cn("whitespace-nowrap", {
+            "w-full sm:w-fit": showBreakdown,
+          })}
+        >
           <tbody className="">
             {tenants.map((name, personIndex) => (
               <tr
@@ -95,7 +99,7 @@ export const Summary = () => {
                   "border-b-foreground": personIndex === tenants.length - 1,
                 })}
               >
-                <td className="">
+                <td className="w-1/2">
                   {name.length > 0 ? name : sampleTenants[personIndex]}
                 </td>
                 {showBreakdown && calcType === "perPersonNight" && (
@@ -104,7 +108,7 @@ export const Summary = () => {
                   />
                 )}
                 <td
-                  className={cn("pl-16 text-right", {
+                  className={cn("w-1/2 pl-4 text-right", {
                     "pl-0 font-bold": showBreakdown,
                   })}
                 >
