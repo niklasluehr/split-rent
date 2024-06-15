@@ -28,7 +28,7 @@ export const Summary = () => {
 
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const getPricesSplitPerNight = () => {
+  const getPricesSplitPerCalendarNight = () => {
     const countVector = binaryMatrix.map((row) =>
       row.reduce((acc, curr) => acc + +curr, 0),
     );
@@ -52,7 +52,7 @@ export const Summary = () => {
     return prices;
   };
 
-  const getPricesSplitNumNights = () => {
+  const getPricesSplitPerPersonNights = () => {
     if (numPersonNights === 0) {
       return Array(tenants.length).fill(
         totalPrice / tenants.length,
@@ -67,9 +67,9 @@ export const Summary = () => {
 
   const getPrices = () => {
     if (calcType === "perCalendarNight") {
-      return getPricesSplitPerNight();
+      return getPricesSplitPerCalendarNight();
     } else {
-      return getPricesSplitNumNights();
+      return getPricesSplitPerPersonNights();
     }
   };
 
