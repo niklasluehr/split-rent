@@ -17,33 +17,29 @@ export const Summary = () => {
   const calcType = useDataStore((state) => state.calcType);
 
   const { xDaysOrNightsWithType } = useDayOrNight();
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const { binaryMatrix, numPersonNights } = useCalculationData();
   const binaryMatrixT = binaryMatrix[0]!.map((_, colIndex) =>
     binaryMatrix.map((row) => row[colIndex]!),
   );
-  const personNightsArray = binaryMatrixT.map((row) =>
+  const countVector = binaryMatrix.map((row) =>
     row.reduce((acc, curr) => acc + +curr, 0),
   );
 
-  const [showBreakdown, setShowBreakdown] = useState(false);
-
   const getPricesSplitPerCalendarNight = () => {
-    const countVector = binaryMatrix.map((row) =>
-      row.reduce((acc, curr) => acc + +curr, 0),
-    );
-    const dayPrice = totalPrice / countVector.length;
+    const nightPrice = totalPrice / countVector.length;
 
     const prices = Array(selectedDates.length).fill(0) as number[];
     binaryMatrix.forEach((row, dateIndex) => {
       if (!row.includes(true)) {
         prices.forEach((_, personIndex) => {
-          prices[personIndex] += dayPrice / tenants.length;
+          prices[personIndex] += nightPrice / tenants.length;
         });
       } else {
         row.forEach((isSelected, personIndex) => {
           if (isSelected) {
-            prices[personIndex] += dayPrice / countVector[dateIndex]!;
+            prices[personIndex] += nightPrice / countVector[dateIndex]!;
           }
         });
       }
@@ -58,9 +54,9 @@ export const Summary = () => {
         totalPrice / tenants.length,
       ) as number[];
     }
-    const dayPrice = totalPrice / numPersonNights;
+    const nightPrice = totalPrice / numPersonNights;
     const prices = binaryMatrixT.map(
-      (row) => row.reduce((acc, curr) => acc + +curr, 0) * dayPrice,
+      (row) => row.reduce((acc, curr) => acc + +curr, 0) * nightPrice,
     );
     return prices;
   };
@@ -71,6 +67,26 @@ export const Summary = () => {
     } else {
       return getPricesSplitPerPersonNights();
     }
+  };
+
+  const getPersonNightsArray = () => {
+    return binaryMatrixT.map((row) =>
+      row.reduce((acc, curr) => acc + +curr, 0),
+    );
+  };
+
+  const getCalendarNightsMatrix = () => {
+    const calendarNightsMatrix = Array(tenants.length) as number[][];
+    tenants.forEach((_, personIndex) => {
+      const tenantArray = Array(tenants.length).fill(0) as number[];
+      countVector.forEach((count, dateIndex) => {
+        if (binaryMatrix[dateIndex]![personIndex]) {
+          tenantArray[count - 1]++;
+        }
+      });
+      calendarNightsMatrix[personIndex] = tenantArray;
+    });
+    return calendarNightsMatrix;
   };
 
   return (
@@ -102,11 +118,16 @@ export const Summary = () => {
                 <td className="w-1/2">
                   {name.length > 0 ? name : sampleTenants[personIndex]}
                 </td>
-                {showBreakdown && calcType === "perPersonNight" && (
-                  <BreakdownPerPersonNight
-                    personNights={personNightsArray[personIndex]!}
-                  />
-                )}
+                {showBreakdown &&
+                  (calcType === "perPersonNight" ? (
+                    <BreakdownPerPersonNight
+                      personNights={getPersonNightsArray()[personIndex]!}
+                    />
+                  ) : (
+                    <BreakDownPerCalendarNight
+                      arrayToName={getCalendarNightsMatrix()[personIndex]!}
+                    />
+                  ))}
                 <td
                   className={cn("w-1/2 pl-4 text-right", {
                     "pl-0 font-bold": showBreakdown,
@@ -161,4 +182,14 @@ const BreakdownPerPersonNight = ({
       </td>
     </>
   );
+};
+
+interface BreakdownPerCalendarNightProps {
+  arrayToName: number[];
+}
+
+const BreakDownPerCalendarNight = ({
+  arrayToName,
+}: BreakdownPerCalendarNightProps) => {
+  return <></>;
 };
