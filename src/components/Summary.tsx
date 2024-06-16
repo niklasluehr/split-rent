@@ -102,6 +102,7 @@ export const Summary = () => {
             Show price breakdown
           </Label>
         </div>
+        {showBreakdown && <NightlyPrice />}
         <table
           className={cn("whitespace-nowrap", {
             "w-full sm:w-fit": showBreakdown,
@@ -162,6 +163,30 @@ export const Summary = () => {
       </div>
       <ShareDialog />
     </>
+  );
+};
+
+const NightlyPrice = () => {
+  const totalPrice = useDataStore((state) => state.totalPrice);
+  const calcType = useDataStore((state) => state.calcType);
+
+  const { dayOrNight } = useDayOrNight();
+  const personOrCalendar =
+    calcType === "perCalendarNight" ? "calendar" : "person";
+  const dayOrNightWithType = `${personOrCalendar}-${dayOrNight}`;
+
+  const { numPersonNights, numCalendarNights } = useCalculationData();
+  const numNights =
+    calcType === "perPersonNight" ? numPersonNights : numCalendarNights;
+  const nightlyPrice = totalPrice / numNights;
+
+  return (
+    <div className="mb-2 text-sm">
+      <p>{`Total number of ${dayOrNightWithType}s: ${numNights}`}</p>
+      <p>{`Price per ${dayOrNightWithType}: ${totalPrice}€ / ${numNights} = ${nightlyPrice.toFixed(
+        2,
+      )}€`}</p>
+    </div>
   );
 };
 
