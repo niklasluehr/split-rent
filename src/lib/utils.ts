@@ -15,3 +15,10 @@ export const fromNString = (s: string) => {
     Number(s.slice(6, 8)),
   );
 };
+
+export function toLocaleFixed(num: number) {
+  return num.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}

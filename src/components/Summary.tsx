@@ -7,7 +7,7 @@ import { useCalculationData } from "@/hooks/useCalculationData";
 import { useState } from "react";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { cn } from "@/lib/utils";
+import { cn, toLocaleFixed } from "@/lib/utils";
 import { useDayOrNight } from "@/hooks/useDayOrNight";
 
 export const Summary = () => {
@@ -134,7 +134,7 @@ export const Summary = () => {
                     "pl-0 font-bold": showBreakdown,
                   })}
                 >
-                  {getPrices()[personIndex]!.toFixed(2)} €
+                  {toLocaleFixed(getPrices()[personIndex]!)} €
                 </td>
               </tr>
             ))}
@@ -152,9 +152,9 @@ export const Summary = () => {
                 </>
               )}
               <td className="text-right">
-                {getPrices()
-                  .reduce((acc, curr) => acc + curr, 0)
-                  .toFixed(2)}{" "}
+                {toLocaleFixed(
+                  getPrices().reduce((acc, curr) => acc + curr, 0),
+                )}{" "}
                 €
               </td>
             </tr>
@@ -183,9 +183,9 @@ const NightlyPrice = () => {
   return (
     <div className="mb-2 text-sm">
       <p>{`Total number of ${dayOrNightWithType}s: ${numNights}`}</p>
-      <p>{`Price per ${dayOrNightWithType}: ${totalPrice}€ / ${numNights} = ${nightlyPrice.toFixed(
-        2,
-      )}€`}</p>
+      <p>{`Price per ${dayOrNightWithType}: ${toLocaleFixed(
+        totalPrice,
+      )}€ / ${numNights} = ${toLocaleFixed(nightlyPrice)}€`}</p>
     </div>
   );
 };
@@ -208,7 +208,7 @@ const BreakdownPerPersonNight = ({
         {xDaysOrNights(personNights)}
       </td>
       <td className="pr-8 text-right text-sm sm:pr-16">
-        {personNights === 0 ? "" : `* ${pricePerNight.toFixed(2)}€`}
+        {personNights === 0 ? "" : `* ${toLocaleFixed(pricePerNight)}€`}
       </td>
     </>
   );
@@ -234,7 +234,7 @@ const BreakDownPerCalendarNight = ({
   };
 
   const pricePerNightWithCoTenants = (numCoTenants: number) =>
-    (pricePerNight / (numCoTenants + 1)).toFixed(2);
+    toLocaleFixed(pricePerNight / (numCoTenants + 1));
 
   return (
     <>
