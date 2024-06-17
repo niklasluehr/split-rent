@@ -126,7 +126,9 @@ export const Summary = () => {
                     />
                   ) : (
                     <BreakDownPerCalendarNight
-                      arrayToName={getCalendarNightsMatrix()[personIndex]!}
+                      calendarNightsMatrix={
+                        getCalendarNightsMatrix()[personIndex]!
+                      }
                     />
                   ))}
                 <td
@@ -215,11 +217,11 @@ const BreakdownPerPersonNight = ({
 };
 
 interface BreakdownPerCalendarNightProps {
-  arrayToName: number[];
+  calendarNightsMatrix: number[];
 }
 
 const BreakDownPerCalendarNight = ({
-  arrayToName,
+  calendarNightsMatrix,
 }: BreakdownPerCalendarNightProps) => {
   const totalPrice = useDataStore((state) => state.totalPrice);
   const { numCalendarNights } = useCalculationData();
@@ -239,21 +241,26 @@ const BreakDownPerCalendarNight = ({
   return (
     <>
       <td className="py-2 pl-2 pr-0.5 text-left text-sm leading-snug sm:pl-12 sm:pr-2">
-        {arrayToName.map(
-          (numNights) => numNights > 0 && <div>{xDaysOrNights(numNights)}</div>,
+        {calendarNightsMatrix.map(
+          (numNights, numCoTenants) =>
+            numNights > 0 && (
+              <div key={numCoTenants}> {xDaysOrNights(numNights)}</div>
+            ),
         )}
       </td>
       <td className="py-2 pr-1 text-left text-sm leading-snug sm:pr-2">
-        {arrayToName.map(
+        {calendarNightsMatrix.map(
           (numNights, numCoTenants) =>
-            numNights > 0 && <div>{withXPersons(numCoTenants)}</div>,
+            numNights > 0 && (
+              <div key={numCoTenants}>{withXPersons(numCoTenants)}</div>
+            ),
         )}
       </td>
       <td className="py-2 pl-1 pr-2 text-right text-sm leading-snug sm:pr-12">
-        {arrayToName.map(
+        {calendarNightsMatrix.map(
           (numNights, numCoTenants) =>
             numNights > 0 && (
-              <div>
+              <div key={numCoTenants}>
                 {`${numNights}*${pricePerNightWithCoTenants(numCoTenants)}€`}
               </div>
             ),

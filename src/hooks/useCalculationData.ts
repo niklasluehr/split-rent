@@ -1,6 +1,6 @@
 import { n } from "@/lib/utils";
 import { useDataStore } from "@/store/store";
-import { PaymentType } from "@/types/types";
+import { type PaymentType } from "@/types/types";
 import { addDays } from "date-fns";
 
 export const useCalculationData = () => {
