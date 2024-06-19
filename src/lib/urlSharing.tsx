@@ -7,20 +7,20 @@ const PARAM_START = "s";
 const PARAM_END = "e";
 const PARAM_TOTAL_PRICE = "p";
 const PARAM_CALC_TYPE = "cm"; //calculation method
-const CALC_TYPE_ENCODE: { [K in CalculationType]: string } = {
+const CALC_TYPE_ENCODE: Record<CalculationType, string> = {
   perCalendarNight: "cn",
   perPersonNight: "pn",
 };
-const CALC_TYPE_DECODE: { [K: string]: CalculationType } = {
+const CALC_TYPE_DECODE: Record<string, CalculationType> = {
   cn: "perCalendarNight",
   pn: "perPersonNight",
 };
 const PARAM_PAYMENT_TYPE = "pm";
-const PAYMENT_TYPE_ENCODE: { [K in PaymentType]: string } = {
+const PAYMENT_TYPE_ENCODE: Record<PaymentType, string> = {
   perNight: "n",
   perDay: "d",
 };
-const PAYMENT_TYPE_DECODE: { [K: string]: PaymentType } = {
+const PAYMENT_TYPE_DECODE: Record<string, PaymentType> = {
   n: "perNight",
   d: "perDay",
 };
