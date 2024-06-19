@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 
 import { Inter } from "next/font/google";
 import { Footer } from "@/components/Footer";
+import { Suspense } from "react";
 
 const virgil = localFont({
   src: "../../public/fonts/Virgil.woff2",
@@ -40,7 +41,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Nav />
-          {children}
+          <Suspense>{children}</Suspense>
           <Footer />
         </ThemeProvider>
         <Analytics />
