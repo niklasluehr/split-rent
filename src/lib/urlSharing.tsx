@@ -7,7 +7,23 @@ const PARAM_START = "s";
 const PARAM_END = "e";
 const PARAM_TOTAL_PRICE = "p";
 const PARAM_CALC_TYPE = "cm"; //calculation method
+const CALC_TYPE_ENCODE: { [K in CalculationType]: string } = {
+  perCalendarNight: "cn",
+  perPersonNight: "pn",
+};
+const CALC_TYPE_DECODE: { [K: string]: CalculationType } = {
+  cn: "perCalendarNight",
+  pn: "perPersonNight",
+};
 const PARAM_PAYMENT_TYPE = "pm";
+const PAYMENT_TYPE_ENCODE: { [K in PaymentType]: string } = {
+  perNight: "n",
+  perDay: "d",
+};
+const PAYMENT_TYPE_DECODE: { [K: string]: PaymentType } = {
+  n: "perNight",
+  d: "perDay",
+};
 const PARAM_TENANTS = "t";
 const PARAM_SELECTED_DATES = "b"; //binary matrix
 
@@ -34,8 +50,8 @@ export const encodeParams = ({
     `?${PARAM_START}=${n(start)}` +
     `&${PARAM_END}=${n(end)}` +
     `&${PARAM_TOTAL_PRICE}=${totalPrice}` +
-    `&${PARAM_CALC_TYPE}=${calcType}` +
-    `&${PARAM_PAYMENT_TYPE}=${paymentType}` +
+    `&${PARAM_CALC_TYPE}=${CALC_TYPE_ENCODE[calcType]}` +
+    `&${PARAM_PAYMENT_TYPE}=${PAYMENT_TYPE_ENCODE[paymentType]}` +
     `&${PARAM_TENANTS}=${tenants.join(",")}` +
     `&${PARAM_SELECTED_DATES}=${getBinaryString(start, end, selectedDates)}`;
   return q;
@@ -59,8 +75,8 @@ export const decodeParams = (params: ReadonlyURLSearchParams) => {
   const start = params.get(PARAM_START);
   const end = params.get(PARAM_END);
   const totalPrice = params.get(PARAM_TOTAL_PRICE);
-  const calcType = params.get(PARAM_CALC_TYPE);
-  const paymentType = params.get(PARAM_PAYMENT_TYPE);
+  const calcType = CALC_TYPE_DECODE[params.get(PARAM_CALC_TYPE)!];
+  const paymentType = PAYMENT_TYPE_DECODE[params.get(PARAM_PAYMENT_TYPE)!];
   const tenants = params.get(PARAM_TENANTS);
   const selectedDates = params.get(PARAM_SELECTED_DATES);
 
